@@ -10,6 +10,9 @@ package com.aA.Text
 	 */
 	public class Text 
 	{
+		// font is hardcoded for now, possibly add a static method to set the font ?
+		[Embed(source="C:/Windows/Fonts/calibri.ttf", fontName="Calibri", fontWeight="none", advancedAntiAliasing="true", mimeType = "application/x-font")] private var calibri:Class;
+		
 		/**
 		 * Returns a simple TextField
 		 * 
@@ -23,6 +26,7 @@ package com.aA.Text
 			var tf:TextField = new TextField();
 			
 			var textFormat:TextFormat = new TextFormat("Calibri", size, color);
+			textFormat.font = "calibri";
 			
 			tf.defaultTextFormat = textFormat;
 			
@@ -63,6 +67,7 @@ package com.aA.Text
 			tf.width = width;
 			tf.height = height;
 			tf.border = true;
+			tf.embedFonts = true;
 			
 			tf.backgroundColor = bgColour;
 			tf.selectable = true;
