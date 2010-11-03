@@ -4,15 +4,38 @@ package com.aA.Text
 	import flash.text.TextFormat;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFieldType;
+	
+	import flash.text.Font;
+	import flash.text.AntiAliasType;
+	
 	/**
 	 * ...
 	 * @author Anthony Massingham
 	 */
 	public class Text 
 	{
-		// font is hardcoded for now, possibly add a static method to set the font ?
-		[Embed(source="C:/Windows/Fonts/calibri.ttf", fontName="Calibri", fontWeight="none", advancedAntiAliasing="true", mimeType = "application/x-font")] private var calibri:Class;
-		
+		// UNICODE RANGE REFERENCE
+		/*
+		Default ranges
+		U+0020-U+0040, // Punctuation, Numbers
+		U+0041-U+005A, // Upper-Case A-Z
+		U+005B-U+0060, // Punctuation and Symbols
+		U+0061-U+007A, // Lower-Case a-z
+		U+007B-U+007E, // Punctuation and Symbols
+		Extended ranges (if multi-lingual required)
+		U+0080-U+00FF, // Latin I
+		U+0100-U+017F, // Latin Extended A
+		U+0400-U+04FF, // Cyrillic
+		U+0370-U+03FF, // Greek
+		U+1E00-U+1EFF, // Latin Extended Additional
+		*/
+ 
+		[Embed(source = '/../lib/fonts/myFont.TTF', 
+		fontName = 'MY_FONT',
+		fontWeight = 'regular', 
+		unicodeRange ='U+0020-U+0040,U+0041-U+005A,U+005B-U+0060,U+0061-U+007A,U+007B-U+007E',
+		mimeType = 'application/x-font', embedAsCFF="false")]
+		private static var myFont:String;
 		/**
 		 * Returns a simple TextField
 		 * 
@@ -22,13 +45,18 @@ package com.aA.Text
 		 * @param	alignment		Alignment, DEFAULT : LEFT
 		 * @return
 		 */
-		public static function getTextField(text:String, size:int, color:uint = 0x000000, alignment:String = "LEFT"):TextField {
+
+		public static function getTextField(text:String, size:int, color:uint = 0x000000, alignment:String = "LEFT"):TextField {			
 			var tf:TextField = new TextField();
 			
-			var textFormat:TextFormat = new TextFormat("Calibri", size, color);
-			textFormat.font = "calibri";
+			//Font.registerFont(CalibriFont);
 			
-			tf.defaultTextFormat = textFormat;
+			var textFormat:TextFormat = new TextFormat();
+			textFormat.font = "MY_FONT";
+			textFormat.size = size;
+			textFormat.color = color;
+			
+			tf.embedFonts = true;
 			
 			switch(alignment) {
 				case "CENTER":
@@ -42,9 +70,11 @@ package com.aA.Text
 				break;
 			}
 			
-			tf.htmlText = text;
 			tf.selectable = false;
 			tf.mouseEnabled = false;
+			tf.antiAliasType = AntiAliasType.ADVANCED;
+			tf.defaultTextFormat = textFormat;
+			tf.htmlText = text;
 			
 			return tf;
 		}
