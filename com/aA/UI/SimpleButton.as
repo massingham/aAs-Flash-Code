@@ -5,6 +5,7 @@ package com.aA.UI
 	import flash.text.TextField;
 	
 	import com.aA.Text.Text;
+	import com.aA.Colour.ColourScheme;
 	/**
 	 * Simple Button
 	 * 
@@ -12,15 +13,19 @@ package com.aA.UI
 	 * @email anthony.massingham@gmail.com
 	 */
 	public class SimpleButton extends Sprite
-	{
-		public var text:String;
-		private var colour:uint;
-		
-		private var buttonSprite:Sprite;
-		private var label:TextField;
+	{	
+		protected var text:String;
+		protected var buttonSprite:Sprite;
+		protected var label:TextField;
 		
 		private var theWidth:Number;
 		private var theHeight:Number;
+		
+		private var backgroundColour:uint;
+		private var fontColour:uint;
+		private var colourScheme:ColourScheme;
+		
+		private var useColourScheme:Boolean;
 		
 		/**
 		 * Creates a simple button
@@ -31,12 +36,28 @@ package com.aA.UI
 		 * @param	fontSize	The Size of the Text
 		 * @param	colour		The BG Colour on Mouseover
 		 */
-		public function SimpleButton(w:int, h:int, text:String, fontSize:int, colour:uint) 
+		public function SimpleButton(w:int, h:int, text:String, fontSize:int, _backgroundColour:uint = 1, _fontColour:uint = 1) 
 		{
 			this.text = text;
-			this.colour = colour;
 			this.theWidth = w;
 			this.theHeight = h;
+			colourScheme = ColourScheme.getInstance();
+			
+			useColourScheme = false;
+			
+			if (_backgroundColour == 1) {
+				useColourScheme = true;
+			} else {
+				this.backgroundColour = _backgroundColour;
+			}
+			
+			if (_fontColour == 1) {
+				useColourScheme = true;
+			} else {
+				this.fontColour = _fontColour;
+			}
+			
+			trace("COLOUR SCHEME : " +useColourScheme)
 			
 			buttonSprite = new Sprite();
 			addChild(buttonSprite);
@@ -44,7 +65,6 @@ package com.aA.UI
 			label = Text.getTextField(text, fontSize, 0, "CENTER");
 			
 			if (label.width > this.theWidth) {
-				trace("width is greater");
 				this.theWidth = label.width + 10;
 			}
 			
@@ -55,8 +75,10 @@ package com.aA.UI
 			label.x = theWidth / 2 - label.width / 2;
 			label.y = theHeight / 2 - label.height / 2;
 			
-			drawButton();
+			drawButton(MouseEvent.MOUSE_OUT);
 			buttonSprite.addChild(label);
+			
+			this.name = text;
 			
 			this.addEventListener(MouseEvent.MOUSE_OVER, mEvent);
 			this.addEventListener(MouseEvent.MOUSE_OUT, mEvent);
@@ -66,26 +88,93 @@ package com.aA.UI
 			this.buttonMode = true;
 		}
 		
+		public function setLabel(s:String):void {
+			label.text = s;
+		}
+		
+		public function centreLabel():void {
+			label.x = theWidth / 2 - label.width / 2;
+			label.y = theHeight / 2 - label.height / 2;
+		}
+		
+		public function disable():void {
+			this.buttonMode = false;
+			this.mouseEnabled = false;
+			this.mouseChildren = false;
+			
+			this.removeEventListener(MouseEvent.MOUSE_OVER, mEvent);
+			this.removeEventListener(MouseEvent.MOUSE_OUT, mEvent);
+			this.removeEventListener(MouseEvent.MOUSE_DOWN, mEvent);
+			this.removeEventListener(MouseEvent.MOUSE_UP, mEvent);
+			
+			drawButton(MouseEvent.MOUSE_OUT);
+			
+			this.alpha = 0.5;
+		}
+		
+		public function enable():void {
+			this.buttonMode = true;
+			this.mouseEnabled = true;
+			this.mouseChildren = true;
+			
+			this.addEventListener(MouseEvent.MOUSE_OVER, mEvent);
+			this.addEventListener(MouseEvent.MOUSE_OUT, mEvent);
+			this.addEventListener(MouseEvent.MOUSE_DOWN, mEvent);
+			this.addEventListener(MouseEvent.MOUSE_UP, mEvent);
+			
+			drawButton(MouseEvent.MOUSE_OUT);
+			
+			this.alpha = 1;
+		}
+		
 		/**
 		 * Draws the button
 		 * 
 		 * @param	bgColour
 		 * @param	fontColour
 		 */
-		public function drawButton(bgColour:uint = 0xFFFFFF, fontColour:uint = 0x000000):void {
+		public function drawButton(state:String):void {
 			buttonSprite.graphics.clear();
-			buttonSprite.graphics.beginFill(bgColour);
-			buttonSprite.graphics.lineStyle(0, 0, 0.2);
+			
+			switch(state) {
+				case MouseEvent.MOUSE_DOWN:
+					if (useColourScheme) {
+						buttonSprite.graphics.beginFill(colourScheme.fill_Dark);
+						buttonSprite.graphics.lineStyle(0, colourScheme.fill_Dark);
+						label.textColor = colourScheme.text;
+					} else {
+						buttonSprite.graphics.beginFill(backgroundColour);
+						buttonSprite.graphics.lineStyle(0, fontColour);
+						label.textColor = fontColour;
+					}
+				break;
+				case MouseEvent.MOUSE_OUT:
+					if (useColourScheme) {
+						buttonSprite.graphics.beginFill(colourScheme.fill);
+						buttonSprite.graphics.lineStyle(0, colourScheme.fill_Dark);
+						label.textColor = colourScheme.text;
+					} else {
+						buttonSprite.graphics.beginFill(backgroundColour);
+						buttonSprite.graphics.lineStyle(0, fontColour);
+						label.textColor = fontColour;
+					}
+				break;
+				case MouseEvent.MOUSE_OVER:
+				case MouseEvent.MOUSE_UP:
+					if (useColourScheme) {
+						buttonSprite.graphics.beginFill(colourScheme.fill_Light);
+						buttonSprite.graphics.lineStyle(0, colourScheme.fill_Dark);
+						label.textColor = colourScheme.text;
+					} else {
+						buttonSprite.graphics.beginFill(backgroundColour);
+						buttonSprite.graphics.lineStyle(0, fontColour);
+						label.textColor = fontColour;
+					}
+				break;
+			}
+			
 			buttonSprite.graphics.drawRect(0, 0, theWidth, theHeight);
 			buttonSprite.graphics.endFill();
-			
-			buttonSprite.graphics.lineStyle();
-			
-			buttonSprite.graphics.beginFill(0xFFFFFF, 0.1);
-			buttonSprite.graphics.drawRect(0, 0, theWidth, theHeight / 2);
-			buttonSprite.graphics.endFill();
-			
-			label.textColor = fontColour;
 		}
 		
 		/**
@@ -93,18 +182,7 @@ package com.aA.UI
 		 * @param	event
 		 */
 		private function mEvent(event:MouseEvent):void {
-			switch(event.type) {
-				case "mouseOver":
-				case "mouseUp":
-					drawButton(colour, 0xFFFFFF);
-				break;
-				case "mouseDown":
-					drawButton(colour - 0x111111, 0xFFFFFF);
-				break;
-				default:
-					drawButton();
-				break;
-			}
+			drawButton(event.type);
 		}
 		
 	}

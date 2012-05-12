@@ -30,11 +30,18 @@ package com.aA.Camera
 		public function setStageDimensions(w:Number, h:Number):void {
 			stageWidth = w;
 			stageHeight = h;
+			
+			trace(stageWidth, stageHeight);
 		}
 		
 		public function setScreenDimensions(w:Number, h:Number):void {
 			screenWidth = w;
 			screenHeight = h;
+			trace(screenWidth, screenHeight);
+		}
+		
+		public function getScreenDimensions():Point {
+			return new Point(screenWidth, screenHeight);
 		}
 		
 		public function init():void {
@@ -59,8 +66,29 @@ package com.aA.Camera
 			init();
 		}
 		
+		public function translate(x:Number, y:Number, inBounds:Boolean = false):void {
+			var newPoint:Point = new Point(x + _x, y + _y);
+			moveTo(newPoint);
+			
+			if (inBounds) {
+				// Ensure camera area is full in the bounds of the world
+				forceInBounds();
+			}
+		}
+		
+		public function forceInBounds(leway:Number = 0):void {
+			if (_x < 0 - leway) _x = 0 - leway;				
+			if (_y < 0 - leway) _y = 0 - leway;
+			if (_x + screenWidth > stageWidth + leway) _x = stageWidth - screenWidth + leway;
+			if (_y + screenHeight > stageHeight + leway) _y = stageHeight - screenHeight + leway;
+		}
+		
 		public function getCameraLocation():Point {
 			return new Point(_x, _y);
+		}
+		
+		public function getCameraCentre():Point {
+			return new Point(_x + screenWidth / 2, _y + screenHeight / 2);
 		}
 		
 		/**
@@ -69,6 +97,8 @@ package com.aA.Camera
 		 */
 		public function lookAt(p:Point):void {
 			moveTo(new Point(p.x - screenWidth / 2, p.y - screenHeight / 2));
+			
+			forceInBounds(20);
 		}
 		
 		/**

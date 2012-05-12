@@ -4,6 +4,7 @@ package com.aA.Text
 	import flash.text.TextFormat;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFieldType;
+	import flash.text.TextFormatAlign;
 	
 	import flash.text.Font;
 	import flash.text.AntiAliasType;
@@ -43,33 +44,37 @@ package com.aA.Text
 		 * @return
 		 */
 
-		public static function getTextField(text:String, size:int, color:uint = 0x000000, alignment:String = "LEFT"):TextField {			
+		public static function getTextField(text:String, size:int, color:uint = 0x000000, alignment:String = "LEFT", font:String = "MY_FONT", embedded:Boolean = true):TextField {			
 			var tf:TextField = new TextField();
 			
 			//Font.registerFont(CalibriFont);
 			
 			var textFormat:TextFormat = new TextFormat();
-			textFormat.font = "MY_FONT";
+			textFormat.font = font;
 			textFormat.size = size;
 			textFormat.color = color;
 			
-			tf.embedFonts = true;
+			tf.embedFonts = embedded;
 			
-			switch(alignment) {
+			switch(alignment.toUpperCase()) {
 				case "CENTER":
+				case "CENTRE":
 					tf.autoSize = TextFieldAutoSize.CENTER;
+					textFormat.align = TextFormatAlign.CENTER;
 				break;
 				case "LEFT":
 					tf.autoSize = TextFieldAutoSize.LEFT;
+					textFormat.align = TextFormatAlign.LEFT;
 				break;
 				case "RIGHT":
 					tf.autoSize = TextFieldAutoSize.RIGHT;
+					textFormat.align = TextFormatAlign.RIGHT;
 				break;
 			}
 			
 			tf.selectable = false;
 			tf.mouseEnabled = false;
-			tf.antiAliasType = AntiAliasType.ADVANCED;
+			// tf.antiAliasType = AntiAliasType.ADVANCED;
 			tf.defaultTextFormat = textFormat;
 			tf.htmlText = text;
 			
@@ -87,16 +92,20 @@ package com.aA.Text
 		 * @param	alignment					Alignment, DEFAULT : LEFT
 		 * @return
 		 */
-		public static function getInput(width:int, height:int, size:int, bgColour:uint = 0xFFFFFF, fontcolor:uint = 0x000000, alignment:String = "LEFT"):TextField {
-			var tf:TextField = getTextField("", size, fontcolor, alignment);
-			tf.type = TextFieldType.INPUT;
+		public static function getInput(width:int, height:int, size:int, bgColour:uint = 0xFFFFFF, fontcolor:uint = 0x000000, alignment:String = "LEFT", font:String = "MY_FONT", embedded:Boolean = true):TextField {
+			var tf:TextField = getTextField("", size, fontcolor, alignment, font, embedded);
 			
+			tf.type = TextFieldType.INPUT;
+			tf.autoSize = TextFieldAutoSize.NONE;
 			tf.width = width;
 			tf.height = height;
-			tf.border = true;
-			tf.embedFonts = true;
+			tf.embedFonts = embedded;
 			
+			tf.borderColor = fontcolor;
+			tf.border = true;
+			tf.mouseEnabled = true;
 			tf.backgroundColor = bgColour;
+			tf.background = true;
 			tf.selectable = true;
 			
 			return tf;

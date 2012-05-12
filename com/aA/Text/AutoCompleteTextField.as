@@ -1,10 +1,13 @@
-package {
+package com.aA.Text {
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
+	import com.aA.Colour.Colour;
+	import com.aA.Colour.ColourScheme;
 	import flash.geom.ColorTransform;
 	import flash.text.TextField;
+	import flash.text.TextFormat;
 	import flash.ui.Keyboard;
 	
 	public class AutoCompleteTextField extends Sprite {
@@ -21,7 +24,7 @@ package {
 			this.dictionary = dictionary;
 			this.dictionary.sort();
 			
-			for (var i = 0; i < this.dictionary.length; i++) {
+			for (var i:int = 0; i < this.dictionary.length; i++) {
 				dictionary[i] = dictionary[i].toUpperCase();
 			}
 			
@@ -67,10 +70,14 @@ package {
 			if(textField.text != ""){
 				var textSplit:String = textField.text;
 				
-				var regex:RegExp = new RegExp(textSplit,"gi");
+				var regex:RegExp = new RegExp(textSplit, "gi");
+				if (textSplit == "*" || textSplit == "?" || textSplit == " ") {
+					regex = /./g;
+					textSplit = "";
+				}
 				var selectedWords:Array = new Array();
 				
-				for (var i = 0; i < dictionary.length; i++) {
+				for (var i:int = 0; i < dictionary.length; i++) {
 					if (dictionary[i].search(regex) != -1) {
 						selectedWords.push(dictionary[i]);
 					}
@@ -89,7 +96,7 @@ package {
 		public function clearList():void {
 			wordList.graphics.clear();
 			
-			for (var i = wordList.numChildren - 1; i >= 0; i--) {
+			for (var i:int = wordList.numChildren - 1; i >= 0; i--) {
 				wordList.removeChildAt(i);
 			}
 		}
@@ -101,26 +108,26 @@ package {
 		private function createList(selectedWords:Array, substring:String):void {
 			wordList.graphics.clear();
 			
-			var regex:RegExp = new RegExp(substring,"gi");
+			var regex:RegExp = new RegExp(substring, "gi");
+			var tfFormat:TextFormat = textField.getTextFormat();
+			var fontsize:int = Number(tfFormat.size)
 			
-			for (var i = 0; i < selectedWords.length; i++) {
+			for (var i:int = 0; i < selectedWords.length; i++) {
 				var tfSpriteThing:Sprite = new Sprite();
-				
-				var tf2:TextField = TextFormatter.getTextField();
 				
 				var text:String = selectedWords[i];
 				var startPos:Number = text.search(regex);
 				var textSplit:String = text.substr(0, startPos) + "<u>" + substring + "</u>" + text.substring(startPos + substring.length);
 				
-				tf2.htmlText = textSplit;
+				var tf2:TextField = Text.getTextField(textSplit, fontsize);
 				tfSpriteThing.addChild(tf2);
 				
 				wordList.addChild(tfSpriteThing);
 				
 				if(i%2==0){
-					tfSpriteThing.graphics.beginFill(0x728AB1);
+					tfSpriteThing.graphics.beginFill(ColourScheme.getInstance().highlight);
 				} else {
-					tfSpriteThing.graphics.beginFill(0xA2B1CC);
+					tfSpriteThing.graphics.beginFill(ColourScheme.getInstance().highlight_Light);
 				}
 				
 				tfSpriteThing.graphics.drawRect(0, 0, textField.width, tf2.height);
