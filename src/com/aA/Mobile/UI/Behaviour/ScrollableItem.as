@@ -3,16 +3,20 @@ package com.aA.Mobile.UI.Behaviour
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.EventDispatcher;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	/**
 	 * ...
 	 * @author Anthony Massingham
 	 */
-	public class ScrollableItem 
+	public class ScrollableItem extends EventDispatcher
 	{
 		public static const TYPE_HORIZ:String = "HORIZ";
 		public static const TYPE_VERT:String = "VERT";
+		
+		public static const EVENT_CLEAR:String = "clear";
+		public static const EVENT_RELEASE:String = "up";
 		
 		private var newPos:Point
 		private var oldPos:Point;
@@ -68,16 +72,22 @@ package com.aA.Mobile.UI.Behaviour
 						item.removeEventListener(Event.ENTER_FRAME, velocityUpdate);
 					}
 					
+					speed = new Point(0, 0);
+					
 					scroll();
 				break;
 			case MouseEvent.MOUSE_MOVE:
+					this.dispatchEvent(new Event(EVENT_CLEAR));
+					
 					newPos = new Point(item.stage.mouseX, item.stage.mouseY);
 					speed = new Point(newPos.x - oldPos.x, newPos.y - oldPos.y);
 					oldPos = newPos.clone();
 					
 					update(null);
 				break;
-				case MouseEvent.MOUSE_UP:
+			case MouseEvent.MOUSE_UP:
+					this.dispatchEvent(new Event(EVENT_RELEASE));
+					
 					applyVelocity();
 					
 					item.stage.removeEventListener(MouseEvent.MOUSE_MOVE, mouseEvent);

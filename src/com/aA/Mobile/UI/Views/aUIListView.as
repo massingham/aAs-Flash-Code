@@ -231,6 +231,9 @@ package com.aA.Mobile.UI.Views
 					update(null);
 				break;
 				case MouseEvent.MOUSE_UP:
+					event.preventDefault();
+					event.stopImmediatePropagation();
+				
 					if (currentSelection) {
 						dispatchEvent(new Event(Event.SELECT));
 					}
