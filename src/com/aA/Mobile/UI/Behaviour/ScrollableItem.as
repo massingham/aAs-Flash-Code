@@ -17,6 +17,7 @@ package com.aA.Mobile.UI.Behaviour
 		
 		public static const EVENT_CLEAR:String = "clear";
 		public static const EVENT_RELEASE:String = "up";
+		public static const EVENT_RESET:String = "reset";
 		
 		private var newPos:Point
 		private var oldPos:Point;
@@ -68,6 +69,12 @@ package com.aA.Mobile.UI.Behaviour
 					item.stage.addEventListener(MouseEvent.MOUSE_MOVE, mouseEvent);
 					item.stage.addEventListener(MouseEvent.MOUSE_UP, mouseEvent);
 					
+					if (type == TYPE_HORIZ) {
+						if (item.width < visibleArea.x) return;
+					} else {
+						if (item.height < visibleArea.y) return;
+					}
+					
 					if (item.hasEventListener(Event.ENTER_FRAME)) {
 						item.removeEventListener(Event.ENTER_FRAME, velocityUpdate);
 					}
@@ -79,6 +86,12 @@ package com.aA.Mobile.UI.Behaviour
 			case MouseEvent.MOUSE_MOVE:
 					this.dispatchEvent(new Event(EVENT_CLEAR));
 					
+					if (type == TYPE_HORIZ) {
+						if (item.width < visibleArea.x) return;
+					} else {
+						if (item.height < visibleArea.y) return;
+					}
+					
 					newPos = new Point(item.stage.mouseX, item.stage.mouseY);
 					speed = new Point(newPos.x - oldPos.x, newPos.y - oldPos.y);
 					oldPos = newPos.clone();
@@ -87,6 +100,12 @@ package com.aA.Mobile.UI.Behaviour
 				break;
 			case MouseEvent.MOUSE_UP:
 					this.dispatchEvent(new Event(EVENT_RELEASE));
+					
+					if (type == TYPE_HORIZ) {
+						if (item.width < visibleArea.x) return;
+					} else {
+						if (item.height < visibleArea.y) return;
+					}
 					
 					applyVelocity();
 					
@@ -151,7 +170,7 @@ package com.aA.Mobile.UI.Behaviour
 			boundsCheck();
 		}
 		
-		private function stopScroll():void {
+		private function stopScroll():void {			
 			item.removeEventListener(Event.ENTER_FRAME, update);
 		}
 		
