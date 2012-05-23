@@ -48,6 +48,7 @@ package com.aA.Mobile.UI
 		
 		private var theWidth:Number;
 		private var theHeight:Number;
+		private var fontSize:Number;
 		
 		private var snapshot:Bitmap;
 		
@@ -65,11 +66,12 @@ package com.aA.Mobile.UI
 		 * @param	numLines
 		 * @param	label
 		 */
-		public function aUIInput_NST(theWidth:Number, theHeight:Number, numLines:int, label:String = "label") 
+		public function aUIInput_NST(theWidth:Number, theHeight:Number, numLines:int, label:String = "label", fontSize:Number = -1) 
 		{
 			this.theWidth = theWidth;
 			this.theHeight = theHeight * numLines;
 			this.numberOfLines = numLines;
+			this.fontSize = fontSize;
 			
 			highlightSprite = new Sprite();
 			
@@ -88,8 +90,11 @@ package com.aA.Mobile.UI
 			
 		}
 		
-		private function init(event:Event):void {			
-			var textFormat:TextFormat = new TextFormat("_sans", theHeight * 0.5, style.getColour("textColour"));
+		private function init(event:Event):void {
+			if (fontSize == -1) {
+				fontSize = theHeight * .5;
+			}
+			var textFormat:TextFormat = new TextFormat("_sans", fontSize, style.getColour("textColour"));
 			textField.defaultTextFormat = textFormat;
 			textField.autoSize = TextFieldAutoSize.LEFT;
 			textField.text = "Qq_9";

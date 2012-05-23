@@ -44,7 +44,7 @@ package com.aA.Time
 			if (difference < 60000) {
 				return "Just Now";
 			} else if (difference < Time.days(1)) {
-				return Time.xDaysxHoursxMinutes(difference / 1000, "ago");
+				return Time.xDaysxHoursxMinutes(difference / 1000);
 			} else {
 				return Time.getSimpleDate(time);
 			}
@@ -102,9 +102,9 @@ package com.aA.Time
 			
 			if(minutes != "00"){
 				if (minutes == "01") {
-					returnTime += minutes + " minute"
+					returnTime += minutes + " min"
 				} else {
-					returnTime += minutes + " minutes"
+					returnTime += minutes + " mins"
 				}
 			}
 			

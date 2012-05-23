@@ -1,5 +1,6 @@
 package com.aA.Mobile.UI.Behaviour 
 {
+	import flash.display.Bitmap;
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -31,6 +32,9 @@ package com.aA.Mobile.UI.Behaviour
 		
 		private var type:String;
 		
+		// all for show milladio
+		private var scrollbarSprite:Sprite;
+		
 		public function ScrollableItem(item:DisplayObject, type:String, visibleArea:Point):void {
 			this.item = item;
 			this.type = type;
@@ -49,7 +53,21 @@ package com.aA.Mobile.UI.Behaviour
 			startPosition = new Point(0, 0);
 			mouseStart = new Point(0, 0);
 			
+			this.item.addEventListener("reset", resetScroll);
 			this.item.addEventListener(MouseEvent.MOUSE_DOWN, mouseEvent);
+		}
+		
+		private function resetScroll(event:Event):void {
+			immediateStopMovement();
+			
+			this.item.x = defaultPosition.x;
+			this.item.y = defaultPosition.y;
+			
+			newPos = new Point(0, 0);
+			oldPos = new Point(0, 0);
+			speed = new Point(0, 0);
+			startPosition = new Point(0, 0);
+			mouseStart = new Point(0, 0);
 		}
 		
 		private function addMask(event:Event):void {
@@ -61,9 +79,25 @@ package com.aA.Mobile.UI.Behaviour
 			m.graphics.endFill();
 			item.parent.addChild(m);
 			item.mask = m;
+			
+			scrollbarSprite = new Sprite();
+			scrollbarSprite.graphics.beginFill(0xFF00AA);
+			scrollbarSprite.graphics.drawRect(0, 0, 10, 1);
+			scrollbarSprite.graphics.endFill();
+			scrollbarSprite.y = defaultPosition.y;
+			scrollbarSprite.x = defaultPosition.x;
+			item.parent.addChild(scrollbarSprite);
+			drawScrollbar();
+		}
+		
+		private function drawScrollbar():void {
+			// scrollbar as onscreen compared to offscreen values
+			scrollbarSprite.height = visibleArea.y * (visibleArea.y / item.height);			
+			scrollbarSprite.y = defaultPosition.y - ((visibleArea.y - scrollbarSprite.height) * (item.y / item.height));
 		}
 		
 		private function mouseEvent(event:MouseEvent):void { 
+			drawScrollbar();
 			switch(event.type) {
 				case MouseEvent.MOUSE_DOWN:
 					item.stage.addEventListener(MouseEvent.MOUSE_MOVE, mouseEvent);
@@ -115,6 +149,12 @@ package com.aA.Mobile.UI.Behaviour
 			}
 		}
 		
+		private function immediateStopMovement():void {
+			item.removeEventListener(Event.ENTER_FRAME, update);
+			item.stage.removeEventListener(MouseEvent.MOUSE_MOVE, mouseEvent);
+			item.stage.removeEventListener(MouseEvent.MOUSE_UP, mouseEvent);
+		}
+		
 		private function applyVelocity():void {
 			item.addEventListener(Event.ENTER_FRAME, velocityUpdate);
 		}
@@ -131,6 +171,8 @@ package com.aA.Mobile.UI.Behaviour
 			
 			// LIMITS
 			boundsCheck();
+			
+			drawScrollbar();
 			
 			if (type == TYPE_HORIZ) {
 				if (Math.abs(speed.x) < 0.1) {
@@ -177,7 +219,7 @@ package com.aA.Mobile.UI.Behaviour
 		private function scroll():void {
 			if (type == TYPE_HORIZ) {
 				startPosition.x = item.x;
-				mouseStart.x = item.stage.mouseY;
+				mouseStart.x = item.stage.mouseX;
 				oldPos.x = mouseStart.x;
 			} else {
 				startPosition.y = item.y;
