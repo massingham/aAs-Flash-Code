@@ -1,5 +1,7 @@
 package com.aA.Mobile.UI.Behaviour 
 {
+	import com.aA.Style.StyleManager;
+	import com.gskinner.motion.GTween;
 	import flash.display.Bitmap;
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
@@ -31,6 +33,8 @@ package com.aA.Mobile.UI.Behaviour
 		private var mask:Sprite;
 		
 		private var type:String;
+		
+		private var scrollbarTween:GTween;
 		
 		// all for show milladio
 		private var scrollbarSprite:Sprite;
@@ -81,25 +85,40 @@ package com.aA.Mobile.UI.Behaviour
 			item.mask = m;
 			
 			scrollbarSprite = new Sprite();
-			scrollbarSprite.graphics.beginFill(0xFF00AA);
+			scrollbarSprite.graphics.beginFill(StyleManager.getInstance().getProperty("colour","blue_1"));
 			scrollbarSprite.graphics.drawRect(0, 0, 10, 1);
 			scrollbarSprite.graphics.endFill();
 			scrollbarSprite.y = defaultPosition.y;
-			scrollbarSprite.x = defaultPosition.x;
+			scrollbarSprite.x = defaultPosition.x + visibleArea.x - 15;
 			item.parent.addChild(scrollbarSprite);
+			scrollbarSprite.alpha = 0;
 			drawScrollbar();
 		}
 		
 		private function drawScrollbar():void {
 			// scrollbar as onscreen compared to offscreen values
-			scrollbarSprite.height = visibleArea.y * (visibleArea.y / item.height);			
-			scrollbarSprite.y = defaultPosition.y - ((visibleArea.y - scrollbarSprite.height) * (item.y / item.height));
+			if (item.height < visibleArea.y) {
+				scrollbarSprite.visible = false;
+				return;
+			} else if (scrollbarSprite.visible == false) {
+				scrollbarSprite.visible = true;
+			}
+			
+			scrollbarSprite.height = visibleArea.y * (visibleArea.y / item.height);	
+			
+			var p100:Number = item.y / (item.height - visibleArea.y);
+			var pos:Number = (visibleArea.y-scrollbarSprite.height) * p100;
+			
+			scrollbarSprite.y = 0 - pos;
 		}
 		
 		private function mouseEvent(event:MouseEvent):void { 
 			drawScrollbar();
+			
 			switch(event.type) {
 				case MouseEvent.MOUSE_DOWN:
+					scrollbarTween = new GTween(scrollbarSprite, 0.2, { alpha:1 } );
+					
 					item.stage.addEventListener(MouseEvent.MOUSE_MOVE, mouseEvent);
 					item.stage.addEventListener(MouseEvent.MOUSE_UP, mouseEvent);
 					
@@ -176,10 +195,12 @@ package com.aA.Mobile.UI.Behaviour
 			
 			if (type == TYPE_HORIZ) {
 				if (Math.abs(speed.x) < 0.1) {
+					scrollbarTween = new GTween(scrollbarSprite, 0.5, { alpha:0 } );
 					item.removeEventListener(Event.ENTER_FRAME, velocityUpdate);
 				}
 			} else {
 				if (Math.abs(speed.y) < 0.1) {
+					scrollbarTween = new GTween(scrollbarSprite, 0.5, { alpha:0 } );
 					item.removeEventListener(Event.ENTER_FRAME, velocityUpdate);
 				}
 			}

@@ -79,7 +79,7 @@ package com.aA.Mobile.UI
 			textField.textColor = style.getColour("textColour");
 			textField.type = TextFieldType.INPUT;
 			
-			labelTF = Text.getTextField(label, theHeight >> 1, Colour.changeBrightness(style.getColour("inputBGColour"), 30), "LEFT", "_sans", false);
+			labelTF = Text.getTextField(label, fontSize, Colour.changeBrightness(style.getColour("inputBGColour"), 30), "LEFT", "_sans", false);
 			addChild(labelTF);
 			
 			this.addEventListener(Event.ADDED_TO_STAGE, init);

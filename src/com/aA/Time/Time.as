@@ -44,14 +44,16 @@ package com.aA.Time
 			if (difference < 60000) {
 				return "Just Now";
 			} else if (difference < Time.days(1)) {
-				return Time.xDaysxHoursxMinutes(difference / 1000);
+				return Time.xDaysxHoursxMinutes(difference / 1000, "", true, true, true);
+			} else if (difference > Time.days(1) && difference < (Time.days(7))) {
+				return Time.xDaysxHoursxMinutes(difference / 1000, "", true, true, false);
 			} else {
 				return Time.getSimpleDate(time);
 			}
 			
 		}
 		
-		public static function xDaysxHoursxMinutes(numSeconds:Number, append:String = ""):String {
+		public static function xDaysxHoursxMinutes(numSeconds:Number, append:String = "", showDays:Boolean = true, showHours:Boolean = true, showMinutes:Boolean = true):String {
 			var returnTime:String = "";
 			
 			var seconds:String;
@@ -84,28 +86,42 @@ package com.aA.Time
 			hours = Math.round(h).toString();
 			days = Math.round(d).toString();
 			
-			if (d != 0) {
-				if (d == 1) {
-					returnTime = days + " day, ";
-				} else {
-					returnTime = days + " days, ";
+			if(showDays) {
+				if (d != 0) {
+					if (d == 1) {
+						returnTime += days + " day, ";
+					} else {
+						returnTime += days + " days, ";
+					}
 				}
 			}
 			
-			if (h != 0) {
-				if (h == 1) {
-					returnTime += hours + " hour, "
-				}else {
-					returnTime += hours + " hours, "
+			if(showHours) {
+				if (h != 0) {
+					if (h == 1) {
+						returnTime += hours + " hour, "
+					}else {
+						returnTime += hours + " hours, "
+					}
 				}
 			}
 			
-			if(minutes != "00"){
-				if (minutes == "01") {
-					returnTime += minutes + " min"
-				} else {
-					returnTime += minutes + " mins"
+			if(showMinutes){
+				if(minutes != "00"){
+					if (minutes == "01") {
+						returnTime += minutes + " min"
+					} else {
+						returnTime += minutes + " mins"
+					}
 				}
+			}
+			
+			if (returnTime.charAt(returnTime.length - 1) == ",") {
+				returnTime = returnTime.substr(0, returnTime.length - 1);
+			}
+			
+			if (returnTime.charAt(returnTime.length - 2) == ",") {
+				returnTime = returnTime.substr(0, returnTime.length - 2);
 			}
 			
 			if(append != ""){
