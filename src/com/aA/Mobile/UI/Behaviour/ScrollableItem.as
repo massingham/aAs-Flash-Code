@@ -72,6 +72,8 @@ package com.aA.Mobile.UI.Behaviour
 			speed = new Point(0, 0);
 			startPosition = new Point(0, 0);
 			mouseStart = new Point(0, 0);
+			
+			drawScrollbar();
 		}
 		
 		private function addMask(event:Event):void {
@@ -83,9 +85,11 @@ package com.aA.Mobile.UI.Behaviour
 			m.graphics.endFill();
 			item.parent.addChild(m);
 			item.mask = m;
+			m.x = defaultPosition.x;
+			m.y = defaultPosition.y;
 			
 			scrollbarSprite = new Sprite();
-			scrollbarSprite.graphics.beginFill(StyleManager.getInstance().getProperty("colour","blue_1"));
+			scrollbarSprite.graphics.beginFill(StyleManager.getInstance().getProperty("colour","blue_1"), 0.7);
 			scrollbarSprite.graphics.drawRect(0, 0, 10, 1);
 			scrollbarSprite.graphics.endFill();
 			scrollbarSprite.y = defaultPosition.y;
@@ -106,10 +110,10 @@ package com.aA.Mobile.UI.Behaviour
 			
 			scrollbarSprite.height = visibleArea.y * (visibleArea.y / item.height);	
 			
-			var p100:Number = item.y / (item.height - visibleArea.y);
-			var pos:Number = (visibleArea.y-scrollbarSprite.height) * p100;
+			var p100:Number = (item.y-defaultPosition.y) / (item.height - visibleArea.y);
+			var pos:Number = (visibleArea.y - scrollbarSprite.height) * p100;
 			
-			scrollbarSprite.y = 0 - pos;
+			scrollbarSprite.y = defaultPosition.y - pos;
 		}
 		
 		private function mouseEvent(event:MouseEvent):void { 
@@ -194,12 +198,12 @@ package com.aA.Mobile.UI.Behaviour
 			drawScrollbar();
 			
 			if (type == TYPE_HORIZ) {
-				if (Math.abs(speed.x) < 0.1) {
+				if (Math.abs(speed.x) < 0.15) {
 					scrollbarTween = new GTween(scrollbarSprite, 0.5, { alpha:0 } );
 					item.removeEventListener(Event.ENTER_FRAME, velocityUpdate);
 				}
 			} else {
-				if (Math.abs(speed.y) < 0.1) {
+				if (Math.abs(speed.y) < 0.15) {
 					scrollbarTween = new GTween(scrollbarSprite, 0.5, { alpha:0 } );
 					item.removeEventListener(Event.ENTER_FRAME, velocityUpdate);
 				}
@@ -217,8 +221,8 @@ package com.aA.Mobile.UI.Behaviour
 			} else {
 				if (item.y > defaultPosition.y) {
 					item.y = defaultPosition.y;
-				} else if (item.y + item.height < visibleArea.y) {
-					item.y = visibleArea.y - item.height;
+				} else if (item.y + item.height < visibleArea.y+defaultPosition.y) {
+					item.y = defaultPosition.y + (visibleArea.y - item.height);
 				}
 			}
 		}
