@@ -1,6 +1,7 @@
 package com.aA.Mobile.UI.Views.MenuItems 
 {
 	import com.aA.Mobile.UI.aUIComponent;
+	import com.aA.Style.StyleManager;
 	import com.aA.Text.Text;
 	import flash.display.Sprite;
 	import flash.text.TextField;
@@ -29,6 +30,12 @@ package com.aA.Mobile.UI.Views.MenuItems
 		
 		public static const TYPE_BUTTON:int = 0;
 		public static const TYPE_ICON:int = 1;
+		public static const TYPE_MENU:int = 2;
+		
+		// input
+		public static const TYPE_INPUT_TEXT:int = 3;
+		public static const TYPE_INPUT_CHECK:int = 4;
+		public static const TYPE_INPUT_LARGETEXT:int = 5;
 		
 		public function aUIMenuItem(itemType:int, itemWidth:Number, itemHeight:Number, data:Object) 
 		{
@@ -55,8 +62,14 @@ package com.aA.Mobile.UI.Views.MenuItems
 				case aUIMenuItem.TYPE_BUTTON:
 					return new aUIMenuItem(itemType, itemWidth, itemHeight, data);
 				break;
+				case aUIMenuItem.TYPE_MENU:
+					return new aUISubMenu(itemType, itemWidth, itemHeight, data);
+				break;
 				case aUIMenuItem.TYPE_ICON:
 					return new aUIMI_Icon(itemType, itemWidth, itemHeight, data);
+				break;
+				case aUIMenuItem.TYPE_INPUT_CHECK:
+					return new aUIMI_Checkbox(itemType, itemWidth, itemHeight, data);
 				break;
 			}
 			
@@ -79,12 +92,12 @@ package com.aA.Mobile.UI.Views.MenuItems
 		}
 		
 		protected function drawItemName():void {
-			itemNameTF = Text.getTextField(itemName, itemHeight*.3, 0, "LEFT", "_sans", false);
+			itemNameTF = Text.getTextField(itemName, StyleManager.getInstance().getProperty("font","medium"), 0, "LEFT", "_sans", false);
 			contentSprite.addChild(itemNameTF);
 		}
 		
 		protected function drawItemDescription():void {
-			itemDescriptionTF = Text.getTextField(itemDescription, itemHeight * .2, 0x494949, "LEFT", "_sans", false);
+			itemDescriptionTF = Text.getTextField(itemDescription, StyleManager.getInstance().getProperty("font","small"), 0x494949, "LEFT", "_sans", false);
 			contentSprite.addChild(itemDescriptionTF);
 			itemDescriptionTF.y = itemNameTF.height;
 		}

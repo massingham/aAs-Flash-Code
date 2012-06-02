@@ -77,7 +77,6 @@ package com.aA.Game
 			} else if (setWidth != -1 &&  setHeight == -1) {
 				// height is equal to the height ratio
 				finalHeight = (finalWidth / asset.width) * asset.height;
-				trace(name +":" + finalHeight);
 			} else if (setHeight == -1 && setWidth == -1) {
 				finalWidth = asset.width;
 				finalHeight = asset.height;
