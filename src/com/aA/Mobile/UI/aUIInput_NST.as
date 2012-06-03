@@ -48,7 +48,7 @@ package com.aA.Mobile.UI
 		
 		private var theWidth:Number;
 		private var theHeight:Number;
-		private var fontSize:Number;
+		private var fontSize:int;
 		
 		private var snapshot:Bitmap;
 		
@@ -66,12 +66,14 @@ package com.aA.Mobile.UI
 		 * @param	numLines
 		 * @param	label
 		 */
-		public function aUIInput_NST(theWidth:Number, theHeight:Number, numLines:int, label:String = "label", fontSize:Number = -1) 
+		public function aUIInput_NST(theWidth:Number, theHeight:Number, numLines:int, label:String = "label", fontSize:int = -1) 
 		{
 			this.theWidth = theWidth;
 			this.theHeight = theHeight * numLines;
 			this.numberOfLines = numLines;
 			this.fontSize = fontSize;
+			
+			if (this.fontSize == -1) this.fontSize = theHeight >> 1;
 			
 			highlightSprite = new Sprite();
 			

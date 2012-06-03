@@ -33,7 +33,8 @@ package com.aA.Style
 			}
 		}
 		
-		public function getProperty(style:String, property:String):*{
+		public function getProperty(style:String, property:String):* {
+			if (styles[style] == null) return 0;
 			return styles[style].getProperty(property);
 		}
 		

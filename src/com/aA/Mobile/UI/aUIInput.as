@@ -48,6 +48,7 @@ package com.aA.Mobile.UI
 		
 		private var theWidth:Number;
 		private var theHeight:Number;
+		private var fontSize:int;
 		
 		private var snapshot:Bitmap;
 		
@@ -67,11 +68,13 @@ package com.aA.Mobile.UI
 		 * @param	numLines
 		 * @param	label
 		 */
-		public function aUIInput(theWidth:Number, theHeight:Number, numLines:int, label:String = "label") 
+		public function aUIInput(theWidth:Number, theHeight:Number, numLines:int, label:String = "label", fontSize:int =-1) 
 		{
 			this.theWidth = theWidth;
 			this.theHeight = theHeight * numLines;
 			this.numberOfLines = numLines;
+			this.fontSize = fontSize;
+			if (this.fontSize == -1) this.fontSize = theHeight >> 1;
 			
 			highlightSprite = new Sprite();
 			
@@ -80,7 +83,7 @@ package com.aA.Mobile.UI
 			textField.autoCorrect = false;
 			textField.color = style.getColour("textColour");
 			
-			labelTF = Text.getTextField(label, theHeight >> 1, Colour.changeBrightness(style.getColour("inputBGColour"), 30), "LEFT", "_sans", false);
+			labelTF = Text.getTextField(label, fontSize, Colour.changeBrightness(style.getColour("inputBGColour"), 30), "LEFT", "_sans", false);
 			addChild(labelTF);
 			
 			this.addEventListener(Event.ADDED_TO_STAGE, init);
@@ -90,7 +93,7 @@ package com.aA.Mobile.UI
 		private function init(event:Event):void {
 			textField.stage = this.stage;
 			textField.fontFamily = "_sans";
-			textField.fontSize = theHeight * 0.5;
+			textField.fontSize = fontSize;
 			
 			draw();
 		}
@@ -265,8 +268,9 @@ package com.aA.Mobile.UI
 			textField.fontPosture = fontPosture;
 		}
 
-		public function set fontSize(fontSize:uint):void
+		public function setFontSize(fontSize:uint):void
 		{
+			this.fontSize = fontSize;
 			textField.fontSize = fontSize;
 			this.draw();
 		}
