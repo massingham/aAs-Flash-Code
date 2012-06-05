@@ -52,6 +52,8 @@ package com.aA.Mobile.UI
 		
 		private var snapshot:Bitmap;
 		
+		public var _border:Boolean = true;
+		
 		[Event(name="change",                 type="flash.events.Event")]
 		[Event(name="focusIn",                type="flash.events.FocusEvent")]
 		[Event(name="focusOut",               type="flash.events.FocusEvent")]
@@ -126,6 +128,11 @@ package com.aA.Mobile.UI
 			labelTF.x = labelTF.y;
 		}
 		
+		public function set border(val:Boolean):void {
+			_border = val;
+			draw();
+		}
+		
 		private function getBorderRectangle():Rectangle {
 			var fontHeight:Number = getTotalFontHeight();
 			
@@ -148,7 +155,7 @@ package com.aA.Mobile.UI
 			if (spr == null) spr = this;
 			spr.graphics.clear();
 			spr.graphics.beginFill(style.getColour("inputBGColour"));
-			spr.graphics.lineStyle(0, style.getColour(aUIColourScheme.COLOUR_LINE), 1, true);
+			if(_border) spr.graphics.lineStyle(0, style.getColour(aUIColourScheme.COLOUR_LINE), 1, true);
 			spr.graphics.drawRoundRect(0, 0, theWidth, theHeight, style.cornerRadius, style.cornerRadius);
 			spr.graphics.endFill();
 		}

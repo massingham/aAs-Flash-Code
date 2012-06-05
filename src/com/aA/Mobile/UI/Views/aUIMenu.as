@@ -142,13 +142,15 @@ package com.aA.Mobile.UI.Views
 				count = 0;
 				
 				for (var n:String in menuObject.menuItems[i].data) {
-					addMenuItem(menuObject.menuItems[i].data[n]);
+					var itemType:int = addMenuItem(menuObject.menuItems[i].data[n]);
 					
-					if (count < menuObject.menuItems[i].data.length-1) {
-						contentSprite.graphics.lineStyle(0, 0, 0.4);
-						contentSprite.graphics.moveTo(padding / 2, yPos);
-						contentSprite.graphics.lineTo(stageWidth - padding * 0.5, yPos);
-					}
+					//if (itemType != aUIMenuItem.TYPE_INPUT_CHECK && itemType != aUIMenuItem.TYPE_INPUT_TEXT) {
+						if (count < menuObject.menuItems[i].data.length-1) {
+							contentSprite.graphics.lineStyle(0, 0, 0.4);
+							contentSprite.graphics.moveTo(padding / 2, yPos);
+							contentSprite.graphics.lineTo(stageWidth - padding * 0.5, yPos);
+						}
+					//}
 					
 					count++;
 				}
@@ -174,13 +176,15 @@ package com.aA.Mobile.UI.Views
 			yPos += tf.height;
 		}
 		
-		protected function addMenuItem(data:Object):void {
+		protected function addMenuItem(data:Object):int {
 			var item:aUIMenuItem = aUIMenuItem.getItem(data["itemType"], stageWidth, headerHeight, data);
 			contentSprite.addChild(item);
 			item.y = yPos;
 			yPos += item.height;
 			
 			items[item.id] = item;
+			
+			return item.itemType;
 		}
 		
 		public function getItem(id:String):aUIMenuItem {

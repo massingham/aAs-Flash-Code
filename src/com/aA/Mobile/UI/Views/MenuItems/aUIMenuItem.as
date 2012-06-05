@@ -11,7 +11,7 @@ package com.aA.Mobile.UI.Views.MenuItems
 	 */
 	public class aUIMenuItem extends aUIComponent
 	{
-		protected var itemType:int;
+		public var itemType:int;
 		protected var itemHeight:Number;
 		protected var itemWidth:Number;
 		protected var data:Object;		
@@ -21,6 +21,7 @@ package com.aA.Mobile.UI.Views.MenuItems
 		
 		protected var itemNameTF:TextField;
 		protected var itemDescriptionTF:TextField;
+		protected var inputLabelTF:TextField;
 		
 		private var _enabled:Boolean;
 		
@@ -69,7 +70,10 @@ package com.aA.Mobile.UI.Views.MenuItems
 					return new aUIMI_Icon(itemType, itemWidth, itemHeight, data);
 				break;
 				case aUIMenuItem.TYPE_INPUT_CHECK:
-					return new aUIMI_Checkbox(itemType, itemWidth, itemHeight, data);
+					return new aUIMI_Checkbox(itemType, itemWidth, itemHeight*.7, data);
+				break;
+				case aUIMenuItem.TYPE_INPUT_TEXT:
+					return new aUIMI_Input(itemType, itemWidth, itemHeight*.7, data);
 				break;
 			}
 			
@@ -86,9 +90,27 @@ package com.aA.Mobile.UI.Views.MenuItems
 			contentSprite.y = itemHeight / 2 - contentSprite.height / 2;
 			contentSprite.x = padding;
 			
+			drawHitArea();
+		}
+		
+		protected function drawHitArea():void {
 			this.graphics.beginFill(0, 0);
 			this.graphics.drawRect(0, 0, itemWidth, itemHeight);
 			this.graphics.endFill();
+		}
+		
+		protected function addInputLabel(value:String):void {
+			inputLabelTF = Text.getTextField(value, StyleManager.getInstance().getProperty("font", "small"), 0, "LEFT", "_sans", false);
+			contentSprite.addChild(inputLabelTF);
+			
+			inputLabelTF.x = itemWidth * .2 - inputLabelTF.width;
+			
+			if (inputLabelTF.width > itemWidth * .2) {
+				var numChars:Number = (itemWidth * .2) / (inputLabelTF.textWidth / inputLabelTF.length);
+				if (numChars == inputLabelTF.text.length) return;
+				inputLabelTF.text = inputLabelTF.text.substr(0, numChars) + "...";
+				inputLabelTF.x = itemWidth * .2 - inputLabelTF.width;
+			}
 		}
 		
 		protected function drawItemName():void {

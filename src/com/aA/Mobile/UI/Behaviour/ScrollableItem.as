@@ -3,6 +3,7 @@ package com.aA.Mobile.UI.Behaviour
 	import com.aA.Style.StyleManager;
 	import com.gskinner.motion.GTween;
 	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -37,7 +38,7 @@ package com.aA.Mobile.UI.Behaviour
 		private var scrollbarTween:GTween;
 		
 		// all for show milladio
-		private var scrollbarSprite:Sprite;
+		private var scrollbarSprite:Bitmap;
 		
 		public function ScrollableItem(item:DisplayObject, type:String, visibleArea:Point):void {
 			this.item = item;
@@ -88,10 +89,7 @@ package com.aA.Mobile.UI.Behaviour
 			m.x = defaultPosition.x;
 			m.y = defaultPosition.y;
 			
-			scrollbarSprite = new Sprite();
-			scrollbarSprite.graphics.beginFill(StyleManager.getInstance().getProperty("colour","blue_1"), 0.7);
-			scrollbarSprite.graphics.drawRect(0, 0, 10, 1);
-			scrollbarSprite.graphics.endFill();
+			scrollbarSprite = new Bitmap(new BitmapData(10, 10, false, 0x000000));
 			scrollbarSprite.y = defaultPosition.y;
 			scrollbarSprite.x = defaultPosition.x + visibleArea.x - 15;
 			item.parent.addChild(scrollbarSprite);
