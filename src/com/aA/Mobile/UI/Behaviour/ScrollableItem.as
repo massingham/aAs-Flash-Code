@@ -28,7 +28,7 @@ package com.aA.Mobile.UI.Behaviour
 		private var speed:Point;
 		private var startPosition:Point;
 		private var mouseStart:Point;
-		private var item:DisplayObject;
+		public var item:DisplayObject;
 		private var visibleArea:Point;
 		private var defaultPosition:Point;
 		private var mask:Sprite;
@@ -219,7 +219,8 @@ package com.aA.Mobile.UI.Behaviour
 			} else {
 				if (item.y > defaultPosition.y) {
 					item.y = defaultPosition.y;
-				} else if (item.y + item.height < visibleArea.y+defaultPosition.y) {
+				} else if (item.y + item.height < visibleArea.y + defaultPosition.y) {
+					dispatchEvent(new Event("bottom"));
 					item.y = defaultPosition.y + (visibleArea.y - item.height);
 				}
 			}
