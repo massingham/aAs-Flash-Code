@@ -177,7 +177,7 @@ package com.aA.Mobile.UI
 			}
 		}
 		
-		public function enable(item:int):void {
+		public function enableSpecificItem(item:int):void {
 			items[item].enable();
 			items[item].addEventListener("click", selectItem);
 		}
