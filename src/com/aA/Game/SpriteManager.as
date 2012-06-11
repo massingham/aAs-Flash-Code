@@ -61,12 +61,35 @@ package com.aA.Game
 			return returnMovieClip;
 		}
 		
+		public static function toBitmap(asset:DisplayObject, setWidth:Number = -1, setHeight:Number = -1):Bitmap {
+			var data:BitmapData;
+			var finalWidth:int = setWidth;
+			var finalHeight:int = setHeight;
+			
+			if (setWidth == -1 && setHeight != -1) {
+				finalWidth = (finalHeight / asset.height) * asset.width;
+			} else if (setWidth != -1 &&  setHeight == -1) {
+				finalHeight = (finalWidth / asset.width) * asset.height;
+			} else if (setHeight == -1 && setWidth == -1) {
+				finalWidth = asset.width;
+				finalHeight = asset.height;
+			}
+			
+			var matrix:Matrix = new Matrix();
+			matrix.scale(finalWidth / asset.width, finalHeight / asset.height);
+			
+			data = new BitmapData(finalWidth, finalHeight, true, 0x00FFFFFF);
+			data.draw(asset, matrix);
+			
+			return new Bitmap(data, "auto", true);
+		}
+		
 		public function getItemAsBitmap(name:String, setWidth:Number = -1, setHeight:Number = -1, rotate:Number = 0):Bitmap {
 			var asset:MovieClip = SpriteManager.getInstance().getItem(name);
 			if (asset == null) {
 				return null;
 			}
-			var data:BitmapData;
+			/**var data:BitmapData;
 			
 			var finalWidth:int = setWidth;
 			var finalHeight:int = setHeight;
@@ -98,7 +121,8 @@ package com.aA.Game
 			//	bitmapLibrary[name] = data;
 			//}
 			
-			return new Bitmap(data, "auto", true);
+			return new Bitmap(data, "auto", true);**/
+			return toBitmap(asset, setWidth, setHeight);
 		}
 		
 		public function load(ba:Class):void {

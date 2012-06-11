@@ -11,6 +11,7 @@ package com.aA.Mobile.UI.Views
 	{
 		protected var background:Bitmap;
 		protected var backgroundColour:uint = 0xFFFFFF;
+		protected var noBackground:Boolean = false;
 		
 		public function aUIMobileView() 
 		{
@@ -28,6 +29,7 @@ package com.aA.Mobile.UI.Views
 		}
 		
 		public function draw():void {
+			if (noBackground) return;
 			background = new Bitmap(new BitmapData(stage.fullScreenWidth, stage.fullScreenHeight, false, backgroundColour));
 			addChildAt(background, 0);
 		}

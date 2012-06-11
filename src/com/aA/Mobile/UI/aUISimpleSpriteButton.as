@@ -122,11 +122,13 @@ package com.aA.Mobile.UI
 		public function enable():void {
 			this.alpha = 1;
 			this.mouseEnabled = true;
+			this.mouseChildren = true;
 		}
 		
 		public function disable():void {
 			this.alpha = 0.5;
 			this.mouseEnabled = false;
+			this.mouseChildren = false;
 		}
 		
 	}

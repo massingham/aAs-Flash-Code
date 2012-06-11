@@ -5,6 +5,7 @@ package com.aA.Mobile.UI.Views.MenuItems
 	import com.aA.Style.StyleManager;
 	import com.aA.Text.Text;
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.text.TextField;
 	/**
 	 * ...
@@ -26,18 +27,27 @@ package com.aA.Mobile.UI.Views.MenuItems
 			
 			addInputLabel(itemName);
 			inputTF = new aUIInput_NST(itemWidth / 2, itemHeight * .7, 1, itemDescription, StyleManager.getInstance().getProperty("font", "small"));
+			inputTF.addEventListener(Event.CHANGE, changed);
 			contentSprite.addChild(inputTF);
 			
 			inputTF.x = itemWidth - (inputTF.width + padding * 2);
 			inputTF.y = 0;
 			
-			contentSprite.y = itemHeight / 2 - (itemHeight*.7) / 2;
+			contentSprite.y = itemHeight / 2 - (itemHeight * .7) / 2;
 			contentSprite.x = padding;
 			
 			inputLabelTF.y = inputTF.y + inputTF.height / 2 - inputLabelTF.height / 2;
 			
 			drawHitArea();
-		}		
+		}	
+		
+		public function set value(val:String):void {
+			inputTF.text = val;
+		}
+		
+		public function get value():String {
+			return inputTF.text;
+		}
 	}
 
 }

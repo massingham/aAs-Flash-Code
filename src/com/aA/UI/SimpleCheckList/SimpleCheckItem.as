@@ -64,6 +64,17 @@ package com.aA.UI.SimpleCheckList
 			hitAreaSprite.alpha = 0;
 		}
 		
+		public function check():void {
+			checkSprite.visible = true;
+		}
+		
+		public function uncheck():void {
+			checkSprite.visible = false;
+		}
+		
+		public function get checked():Boolean {
+			return checkSprite.visible;
+		}
 	}
 
 }

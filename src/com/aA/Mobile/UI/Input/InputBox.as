@@ -116,6 +116,13 @@ package com.aA.Mobile.UI.Input
 			defaultY = super.y;
 		}
 		
+		public function get text():String {
+			return inputTF.text;
+		}
+		
+		public function clear():void {
+			inputTF.text = "";	
+		}
 	}
 
 }

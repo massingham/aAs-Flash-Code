@@ -265,9 +265,8 @@ package com.aA.Mobile.UI
 		
 		public function set text(value:String):void {
 			textField.text = value;
-			if (textField.text == "") {
-				showhideLabel(null);
-			}
+			
+			showhideLabel(null);
 		}
 		
 		public function get text():String {

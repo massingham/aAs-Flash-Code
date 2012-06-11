@@ -4,6 +4,7 @@ package com.aA.Mobile.UI.Views.MenuItems
 	import com.aA.Style.StyleManager;
 	import com.aA.Text.Text;
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.text.TextField;
 	/**
 	 * ...
@@ -162,6 +163,10 @@ package com.aA.Mobile.UI.Views.MenuItems
 				this.mouseEnabled = false;
 				this.mouseChildren = false;
 			}
+		}
+		
+		public function changed(event:Event):void {
+			dispatchEvent(new Event("change"));
 		}
 		
 		public function get enabled():Boolean {

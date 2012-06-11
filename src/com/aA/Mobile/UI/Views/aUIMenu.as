@@ -26,6 +26,7 @@ package com.aA.Mobile.UI.Views
 		private var contentSprite:Sprite;
 		private var headerSprite:Sprite;
 		private var backButton:Sprite;
+		public var saveButton:Sprite;
 		
 		public var menuName:String;
 		private var headerLabel:TextField;
@@ -103,17 +104,38 @@ package com.aA.Mobile.UI.Views
 			headerLabel.y = headerHeight / 2 - headerLabel.height / 2;
 		}
 		
+		
+		protected function renderSaveButton():void {
+			saveButton = new Sprite();
+			headerSprite.addChild(saveButton);
+			
+			saveButton.graphics.beginFill(0x2E5380);
+			saveButton.graphics.drawRect(0, 0, headerHeight, headerHeight);
+			saveButton.graphics.endFill();
+			
+			var saveTF:TextField = Text.getTextField("save", StyleManager.getInstance().getProperty("font", "small"), 0xC3C3C3, "LEFT", "_sans", false);
+			saveButton.addChild(saveTF);
+			saveTF.x = headerHeight / 2 - saveTF.width / 2;
+			saveTF.y = headerHeight / 2 - saveTF.height / 2;
+			
+			saveButton.graphics.lineStyle(0, 0x151515, 0.5);
+			saveButton.graphics.moveTo(headerHeight, 0);
+			saveButton.graphics.lineTo(headerHeight, headerHeight);
+			
+			saveButton.x = stageWidth - headerHeight;
+			
+			disableSave();
+		}
+		
 		protected function drawBackButton():void {
 			backButton.graphics.beginFill(0x2E5380);
 			backButton.graphics.drawRect(0, 0, headerHeight, headerHeight);
 			backButton.graphics.endFill();
 			
-			backButton.graphics.beginFill(0, 0.5);
-			backButton.graphics.moveTo(headerHeight * .75, headerHeight * .75);
-			backButton.graphics.lineTo(headerHeight * .75, headerHeight * .25);
-			backButton.graphics.lineTo(headerHeight * .25, headerHeight / 2);
-			backButton.graphics.lineTo(headerHeight * .75, headerHeight * .75);
-			backButton.graphics.endFill();
+			var backTF:TextField = Text.getTextField("back", StyleManager.getInstance().getProperty("font", "small"), 0xC3C3C3, "LEFT", "_sans", false);
+			backButton.addChild(backTF);
+			backTF.x = headerHeight / 2 - backTF.width / 2;
+			backTF.y = headerHeight / 2 - backTF.height / 2;
 			
 			backButton.graphics.lineStyle(0, 0x151515, 0.5);
 			backButton.graphics.moveTo(headerHeight, 0);
@@ -123,6 +145,8 @@ package com.aA.Mobile.UI.Views
 		}
 		
 		private function back(event:MouseEvent):void {
+			disableSave();
+			
 			dispatchEvent(new Event("back"));
 		}
 		
@@ -144,17 +168,21 @@ package com.aA.Mobile.UI.Views
 				for (var n:String in menuObject.menuItems[i].data) {
 					var itemType:int = addMenuItem(menuObject.menuItems[i].data[n]);
 					
-					//if (itemType != aUIMenuItem.TYPE_INPUT_CHECK && itemType != aUIMenuItem.TYPE_INPUT_TEXT) {
-						if (count < menuObject.menuItems[i].data.length-1) {
+					if (itemType != aUIMenuItem.TYPE_INPUT_CHECK && itemType != aUIMenuItem.TYPE_INPUT_TEXT) {
+						if (count < menuObject.menuItems[i].data.length - 1) {
 							contentSprite.graphics.lineStyle(0, 0, 0.4);
 							contentSprite.graphics.moveTo(padding / 2, yPos);
 							contentSprite.graphics.lineTo(stageWidth - padding * 0.5, yPos);
 						}
-					//}
+					}
 					
 					count++;
 				}
 				yPos += padding / 2;
+			}
+			
+			if (menuObject.showSave) {
+				renderSaveButton();
 			}
 		}
 		
@@ -183,8 +211,29 @@ package com.aA.Mobile.UI.Views
 			yPos += item.height;
 			
 			items[item.id] = item;
+			item.addEventListener("change", dataChanged);
 			
 			return item.itemType;
+		}
+		
+		public function enableSave():void {
+			if (saveButton) {
+				saveButton.mouseEnabled = true;
+				saveButton.mouseChildren = true;
+				saveButton.alpha = 1;
+			}
+		}
+		
+		public function disableSave():void {
+			if (saveButton) {
+				saveButton.mouseEnabled = false;
+				saveButton.mouseChildren = false;
+				saveButton.alpha = 0.4;
+			}
+		}
+		
+		protected function dataChanged(event:Event):void {
+			enableSave();
 		}
 		
 		public function getItem(id:String):aUIMenuItem {
