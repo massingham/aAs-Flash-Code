@@ -10,6 +10,7 @@ package com.aA.Game
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.geom.Matrix;
+	import flash.geom.Point;
 	import flash.system.ApplicationDomain;
 	import flash.system.Capabilities;
 	import flash.system.LoaderContext;
@@ -82,6 +83,24 @@ package com.aA.Game
 			data.draw(asset, matrix);
 			
 			return new Bitmap(data, "auto", true);
+		}
+		
+		public function getScaledDimensions(name:String, setWidth:Number = -1, setHeight:Number = -1):Point {
+			var asset:MovieClip = SpriteManager.getInstance().getItem(name);
+			
+			var finalWidth:int = setWidth;
+			var finalHeight:int = setHeight;
+			
+			if (setWidth == -1 && setHeight != -1) {
+				finalWidth = (finalHeight / asset.height) * asset.width;
+			} else if (setWidth != -1 &&  setHeight == -1) {
+				finalHeight = (finalWidth / asset.width) * asset.height;
+			} else if (setHeight == -1 && setWidth == -1) {
+				finalWidth = asset.width;
+				finalHeight = asset.height;
+			}
+			
+			return new Point(finalWidth, finalHeight);
 		}
 		
 		public function getItemAsBitmap(name:String, setWidth:Number = -1, setHeight:Number = -1, rotate:Number = 0):Bitmap {

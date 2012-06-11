@@ -56,9 +56,6 @@ package com.aA.Mobile.UI.Input
 			addChild(inputTF);
 			inputTF.border = false;
 			
-			inputTF.addEventListener(FocusEvent.FOCUS_IN, focus);
-			inputTF.addEventListener(FocusEvent.FOCUS_OUT, focus);
-			
 			submitButton = new aUIButton("Send", sendWidth, boxHeight);
 			submitButton.setTextHeight(StyleManager.getInstance().getProperty("font", "small"));
 			submitButton.style = inputStyle;
@@ -75,10 +72,6 @@ package com.aA.Mobile.UI.Input
 			lines.graphics.lineTo(boxWidth, 0);
 			lines.graphics.moveTo(submitButton.x, boxHeight * .2);
 			lines.graphics.lineTo(submitButton.x, boxHeight * .8);
-		}
-		
-		private function focus(event:FocusEvent):void {
-			trace(event.type);
 		}
 		
 		private function onKeyDown(event:KeyboardEvent):void {
@@ -107,13 +100,13 @@ package com.aA.Mobile.UI.Input
 		override public function set x(value:Number):void 
 		{
 			super.x = value;
-			defaultX = super.x;
+			defaultX = value;
 		}
 		
 		override public function set y(value:Number):void 
 		{
 			super.y = value;
-			defaultY = super.y;
+			defaultY = value;
 		}
 		
 		public function get text():String {
