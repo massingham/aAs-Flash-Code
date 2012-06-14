@@ -82,7 +82,7 @@ package com.aA.Game
 			data = new BitmapData(finalWidth, finalHeight, true, 0x00FFFFFF);
 			data.draw(asset, matrix);
 			
-			return new Bitmap(data, "auto", true);
+			return new Bitmap(data, "auto", false);
 		}
 		
 		public function getScaledDimensions(name:String, setWidth:Number = -1, setHeight:Number = -1):Point {

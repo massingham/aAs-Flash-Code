@@ -2,6 +2,7 @@ package com.aA.Mobile.UI.Views.MenuItems
 {
 	import com.aA.Mobile.UI.aUIInput;
 	import com.aA.Mobile.UI.aUIInput_NST;
+	import com.aA.Mobile.UI.Style.aUIStyleGuide;
 	import com.aA.Style.StyleManager;
 	import com.aA.Text.Text;
 	import flash.display.Sprite;
@@ -25,23 +26,36 @@ package com.aA.Mobile.UI.Views.MenuItems
 			contentSprite = new Sprite();
 			addChild(contentSprite);
 			
-			addInputLabel(itemName);
-			inputTF = new aUIInput_NST(itemWidth / 2, itemHeight * .7, 1, itemDescription, StyleManager.getInstance().getProperty("font", "small"));
+			var style:aUIStyleGuide = new aUIStyleGuide()
+			style.setColourScheme({
+				"textColour":0x7E7E7E,
+				"inputBGColour":0xEAEAEA
+			});
+			
+			inputTF = new aUIInput_NST(itemWidth / 2, itemHeight * .7, data.numLines, itemDescription, StyleManager.getInstance().getProperty("font", "small"));
+			inputTF.style = style;
 			inputTF.addEventListener(Event.CHANGE, changed);
 			contentSprite.addChild(inputTF);
+			
+			inputTF.border = false;
 			
 			inputTF.x = itemWidth - (inputTF.width + padding * 2);
 			inputTF.y = 0;
 			
+			addInputLabel(itemName);
+			
 			contentSprite.y = itemHeight / 2 - (itemHeight * .7) / 2;
 			contentSprite.x = padding;
 			
-			inputLabelTF.y = inputTF.y + inputTF.height / 2 - inputLabelTF.height / 2;
+			inputLabelTF.y = (inputTF.y + inputTF.height / 2) - inputLabelTF.height / 2;
+			
+			itemHeight = inputTF.height + itemHeight * .15;
 			
 			drawHitArea();
 		}	
 		
 		public function set value(val:String):void {
+			if (val == null) return;
 			inputTF.text = val;
 		}
 		

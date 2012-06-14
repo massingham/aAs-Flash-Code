@@ -8,7 +8,9 @@ package com.aA.Mobile.UI.Input
 	import flash.events.Event;
 	import flash.events.FocusEvent;
 	import flash.events.KeyboardEvent;
+	import flash.events.MouseEvent;
 	import flash.events.SoftKeyboardEvent;
+	import flash.events.SoftKeyboardTrigger;
 	import flash.ui.Keyboard;
 	/**
 	 * ...
@@ -24,6 +26,8 @@ package com.aA.Mobile.UI.Input
 		
 		public function InputBox(boxWidth:Number, boxHeight:Number, style:aUIStyleGuide = null) 
 		{
+			super();
+			
 			this.addEventListener(Event.ADDED_TO_STAGE, initEventListeners);
 			init(boxWidth, boxHeight, style);
 		}
@@ -62,7 +66,7 @@ package com.aA.Mobile.UI.Input
 			addChild(submitButton);
 			submitButton.x = boxWidth - sendWidth;
 			
-			submitButton.addEventListener("click", sendMessage);
+			submitButton.addEventListener(MouseEvent.MOUSE_DOWN, sendMessage);
 			
 			var lines:Sprite = new Sprite();
 			addChild(lines);
@@ -77,10 +81,11 @@ package com.aA.Mobile.UI.Input
 		private function onKeyDown(event:KeyboardEvent):void {
 			if (event.keyCode == Keyboard.ENTER) {
 				submitMessage();
+				stage.focus = null;
 			}
 		}
 		
-		private function sendMessage(event:Event):void {
+		private function sendMessage(event:MouseEvent):void {
 			submitMessage();
 		}
 		
@@ -89,7 +94,7 @@ package com.aA.Mobile.UI.Input
 		}
 		
 		private function moveInput(event:SoftKeyboardEvent):void {
-			this.y = stage.softKeyboardRect.y - this.height;
+			super.y = stage.softKeyboardRect.y - this.height;
 		}
 		
 		private function moveInputBack(event:SoftKeyboardEvent):void {
@@ -115,6 +120,10 @@ package com.aA.Mobile.UI.Input
 		
 		public function clear():void {
 			inputTF.text = "";	
+		}
+		
+		public function focus():void {
+			inputTF.focus();
 		}
 	}
 

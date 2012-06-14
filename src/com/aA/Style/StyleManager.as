@@ -33,6 +33,13 @@ package com.aA.Style
 			}
 		}
 		
+		public function setStyle(style:String, property:String, value:*):void {
+			if (styles[style] == null) {
+				styles[style] = new Style(style);
+			}
+			styles[style].setProperty(property, value);
+		}
+		
 		public function getProperty(style:String, property:String):* {
 			if (styles[style] == null) return 0;
 			return styles[style].getProperty(property);

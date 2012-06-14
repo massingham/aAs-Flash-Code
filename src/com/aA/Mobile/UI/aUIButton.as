@@ -90,7 +90,7 @@ package com.aA.Mobile.UI
 			switch(event.type) {
 				case MouseEvent.MOUSE_DOWN:
 					button_pressSprite.visible = true;
-					event.stopPropagation();
+					//event.stopPropagation();
 				break;
 				case MouseEvent.MOUSE_OUT:
 				case MouseEvent.MOUSE_UP:

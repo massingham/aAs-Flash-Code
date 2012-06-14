@@ -1,9 +1,11 @@
 package com.aA.Mobile.UI 
 {
 	import com.aA.Game.SpriteManager;
+	import com.aA.Mobile.UI.Behaviour.ScrollableItem;
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.text.TextField;
 	import com.aA.Text.Text;
@@ -30,6 +32,8 @@ package com.aA.Mobile.UI
 		
 		private var highlightBox:Sprite;
 		private var selected:Boolean;
+		
+		private var maxHeight:Number = -1;
 		
 		public var showSelected:Boolean = false;
 		
@@ -66,6 +70,24 @@ package com.aA.Mobile.UI
 			highlightBox.visible = false;
 			
 			this.addEventListener("click", openclose);
+		}
+		
+		public function setMaxHeight(mH:Number):void {
+			if (maxHeight != -1) {
+				maxHeight = mH;
+				itemSprite.dispatchEvent(new Event("change"));
+			} else {
+				if (itemSprite.height > mH) {
+					this.maxHeight = mH;
+					var s:ScrollableItem = new ScrollableItem(itemSprite, ScrollableItem.TYPE_VERT, new Point(theWidth, maxHeight));
+				}
+			}
+		}
+		
+		public function clear():void {
+			for (var i:int = items.length - 1; i >= 0; i--) {
+				removeItem(items[i].name);
+			}
 		}
 		
 		protected function redrawHighlightBox(size:Number):void {

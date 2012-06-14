@@ -207,6 +207,7 @@ package com.aA.Mobile.UI.Views
 		protected function addMenuItem(data:Object):int {
 			var item:aUIMenuItem = aUIMenuItem.getItem(data["itemType"], stageWidth, headerHeight, data);
 			contentSprite.addChild(item);
+			
 			item.y = yPos;
 			yPos += item.height;
 			

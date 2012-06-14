@@ -83,11 +83,21 @@ package com.aA.Mobile.UI
 			textField.textColor = style.getColour("textColour");
 			textField.type = TextFieldType.INPUT;
 			
-			labelTF = Text.getTextField(label, fontSize, Colour.changeBrightness(style.getColour("inputBGColour"), 30), "LEFT", "_sans", false);
+			var labelColour:uint;
+			if (style.getColour("labelColour")) {
+				style.getColour("labelColour");
+			} else {
+				labelColour = Colour.changeBrightness(style.getColour("inputBGColour"), 30)
+			}
+			labelTF = Text.getTextField(label, fontSize, labelColour, "LEFT", "_sans", false);
 			addChild(labelTF);
 			
 			this.addEventListener(Event.ADDED_TO_STAGE, init);
 			this.addEventListener(Event.CHANGE, showhideLabel);
+		}
+		
+		public function focus():void {
+			stage.focus = textField;
 		}
 		
 		public function display():void {
@@ -95,6 +105,7 @@ package com.aA.Mobile.UI
 		}
 		
 		private function init(event:Event):void {
+			
 			if (fontSize == -1) {
 				fontSize = theHeight * .5;
 			}
@@ -105,11 +116,16 @@ package com.aA.Mobile.UI
 			
 			var h:Number = textField.height;
 			textField.autoSize = TextFieldAutoSize.NONE;
-			textField.height = h;
+			textField.height = h * numberOfLines;
+			
+			if (numberOfLines > 1) {
+				textField.wordWrap = true;
+				
+				theHeight = textField.height + fontSize;
+			}
 			
 			textField.text = "";
 			addChild(textField);
-			
 			
 			draw();
 		}
@@ -118,9 +134,10 @@ package com.aA.Mobile.UI
 			if (this.stage == null || !this.stage.contains(this)) return;
 			lineMetric = null;
 			
-			textField.width = getBorderRectangle().width;
+			var bdr:Rectangle = getBorderRectangle();
+			textField.width = bdr.width;
 			textField.y = theHeight / 2 - textField.height / 2;
-			textField.x = textField.y *1.2;
+			textField.x = bdr.x;
 			
 			drawBorder();
 			
@@ -143,12 +160,15 @@ package com.aA.Mobile.UI
 			//					 Math.round((totalFontHeight + (totalFontHeight - textField.fontSize)) * numberOfLines) - textField.fontSize / 4);
 			
 			
-			var padding:Number = (theHeight - fontHeight) >> 1;
+			var padding:Number = (fontHeight/2);
 			
-			return new Rectangle(Math.round(this.x + padding),
-								Math.round(this.y + padding),
-								Math.round(theWidth - (padding << 1)),
-								Math.round(theHeight));
+			//return new Rectangle(Math.round(padding),
+								//Math.round(padding),
+								//Math.round(theWidth - (padding*2)),
+								//Math.round(theHeight));
+								//Math.round((fontHeight) * numberOfLines));	}
+								
+			return new Rectangle(padding, padding, theWidth - (padding * 2), textField.height);
 		}
 		
 		private function drawBorder(spr:Sprite = null):void {

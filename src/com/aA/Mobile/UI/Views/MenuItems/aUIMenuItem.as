@@ -101,17 +101,17 @@ package com.aA.Mobile.UI.Views.MenuItems
 		}
 		
 		protected function addInputLabel(value:String):void {
-			inputLabelTF = Text.getTextField(value, StyleManager.getInstance().getProperty("font", "small"), 0, "LEFT", "_sans", false);
+			inputLabelTF = Text.getTextField("<b>" + value + "</b>", StyleManager.getInstance().getProperty("font", "small"), 0, "LEFT", "_sans", false);
 			contentSprite.addChild(inputLabelTF);
 			
-			inputLabelTF.x = itemWidth * .2 - inputLabelTF.width;
+			inputLabelTF.x = 0;
 			
-			if (inputLabelTF.width > itemWidth * .2) {
-				var numChars:Number = (itemWidth * .2) / (inputLabelTF.textWidth / inputLabelTF.length);
-				if (numChars == inputLabelTF.text.length) return;
-				inputLabelTF.text = inputLabelTF.text.substr(0, numChars) + "...";
-				inputLabelTF.x = itemWidth * .2 - inputLabelTF.width;
-			}
+			//if (inputLabelTF.width > itemWidth * .2) {
+			//	var numChars:Number = (itemWidth * .2) / (inputLabelTF.textWidth / inputLabelTF.length);
+			//	if (numChars == inputLabelTF.text.length) return;
+			//	inputLabelTF.text = inputLabelTF.text.substr(0, numChars) + "...";
+			//	inputLabelTF.x = itemWidth * .2 - inputLabelTF.width;
+			//}
 		}
 		
 		protected function drawItemName():void {

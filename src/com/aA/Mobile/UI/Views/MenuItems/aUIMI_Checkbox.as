@@ -35,6 +35,7 @@ package com.aA.Mobile.UI.Views.MenuItems
 			
 			drawHitArea();
 			
+			checkBox.uncheck();
 			this.addEventListener(MouseEvent.MOUSE_DOWN, toggle);
 		}
 		
@@ -48,6 +49,7 @@ package com.aA.Mobile.UI.Views.MenuItems
 		}
 		
 		public function set value(val:*):void {
+			if (val == null) return; 
 			if (typeof val == "string") {
 				if (val == "true") {
 					checkBox.check();
