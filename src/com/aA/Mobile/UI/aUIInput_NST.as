@@ -142,6 +142,7 @@ package com.aA.Mobile.UI
 			drawBorder();
 			
 			labelTF.y = theHeight / 2 - labelTF.height / 2;
+			labelTF.y /= numberOfLines;
 			labelTF.x = labelTF.y;
 		}
 		

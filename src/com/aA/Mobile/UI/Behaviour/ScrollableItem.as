@@ -62,6 +62,10 @@ package com.aA.Mobile.UI.Behaviour
 			this.item.addEventListener(MouseEvent.MOUSE_DOWN, mouseEvent);
 		}
 		
+		public function reset():void {
+			resetScroll(null);
+		}
+		
 		private function resetScroll(event:Event):void {
 			immediateStopMovement();
 			
@@ -75,6 +79,8 @@ package com.aA.Mobile.UI.Behaviour
 			mouseStart = new Point(0, 0);
 			
 			drawScrollbar();
+			
+			trace("reset");
 		}
 		
 		private function addMask(event:Event):void {

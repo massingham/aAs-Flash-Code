@@ -36,6 +36,7 @@ package com.aA.Mobile.UI
 		private var maxHeight:Number = -1;
 		
 		public var showSelected:Boolean = false;
+		public var lastSelected:String;
 		
 		public function aUIComboBox(theWidth:Number, theHeight:Number, direction:String = "UP", title:String = "") 
 		{			
@@ -70,6 +71,12 @@ package com.aA.Mobile.UI
 			highlightBox.visible = false;
 			
 			this.addEventListener("click", openclose);
+		}
+		
+		override public function setState(state:String):void 
+		{
+			lastSelected = state;
+			super.setState(state);
 		}
 		
 		public function setMaxHeight(mH:Number):void {
@@ -233,8 +240,9 @@ package com.aA.Mobile.UI
 			
 			highlightBox.y = event.currentTarget.y;
 			selected = true;
-			
 			// change parent
+			
+			lastSelected = event.currentTarget.name;
 			
 			dispatchEvent(new aUIComboBoxEvent(aUIComboBoxEvent.ITEM_SELECTED, event.currentTarget.name));
 		}
@@ -248,6 +256,9 @@ package com.aA.Mobile.UI
 			}
 			
 			itemSprite.graphics.clear();
+			
+			if (items.length == 0) return;
+			
 			
 			for (var i:int = 0; i < items.length; i++) {
 				items[i].width = minItemWidth;
@@ -266,8 +277,7 @@ package com.aA.Mobile.UI
 				
 				titleTF.x = _fullHeight * 0.2;
 				titleTF.y = items[items.length - 1].y - headerSize + headerSize / 2 - titleTF.height / 2;
-			}
-			
+			}			
 			
 			var shadowsize:int = 3;
 			if(shadowsize > 0){
