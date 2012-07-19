@@ -26,7 +26,7 @@ package com.aA.Game
 		
 		private static var _instance:SpriteManager;
 		private var library:Dictionary;
-		private var bitmapLibrary:Dictionary;
+		private static var bitmapLibrary:Dictionary;
 		
 		private var loader:Loader;
 		
@@ -76,13 +76,31 @@ package com.aA.Game
 				finalHeight = asset.height;
 			}
 			
+			var key:String = asset.name + ":" + finalWidth + "x" + finalHeight;
+			
+			if (asset.name.substr(0, 8) != "instance") {
+				if (bitmapLibrary[key] != null) {
+					//trace("<SM> Returning Saved Bitmap:"+key);
+					return new Bitmap(bitmapLibrary[key], "auto", false);
+				}
+			}
+			
 			var matrix:Matrix = new Matrix();
 			matrix.scale(finalWidth / asset.width, finalHeight / asset.height);
 			
 			data = new BitmapData(finalWidth, finalHeight, true, 0x00FFFFFF);
 			data.draw(asset, matrix);
 			
-			return new Bitmap(data, "auto", false);
+			if (asset.name.substr(0, 8) != "instance"){
+				//trace("<SM> Setting New Bitmap:"+key);
+				bitmapLibrary[key] = data;
+				return new Bitmap(bitmapLibrary[key], "auto", false);
+			} else {
+				//trace("<SM> Isolated Bitmap");
+				return new Bitmap(data, "auto", false);
+			}
+			
+			//throw new Error("<SM> Something went wrong...");
 		}
 		
 		public function getScaledDimensions(name:String, setWidth:Number = -1, setHeight:Number = -1):Point {
@@ -108,39 +126,7 @@ package com.aA.Game
 			if (asset == null) {
 				return null;
 			}
-			/**var data:BitmapData;
-			
-			var finalWidth:int = setWidth;
-			var finalHeight:int = setHeight;
-			
-			if (setWidth == -1 && setHeight != -1) {
-				// width is equal to the height ratio
-				finalWidth = (finalHeight / asset.height) * asset.width;
-			} else if (setWidth != -1 &&  setHeight == -1) {
-				// height is equal to the height ratio
-				finalHeight = (finalWidth / asset.width) * asset.height;
-			} else if (setHeight == -1 && setWidth == -1) {
-				finalWidth = asset.width;
-				finalHeight = asset.height;
-			}
-			
-			var matrix:Matrix = new Matrix();
-			matrix.scale(finalWidth / asset.width, finalHeight / asset.height);
-			
-			//if (rotate != 0) {
-			//	matrix.translate(0 - finalWidth / 2, 0 - finalHeight / 2);
-			//	matrix.rotate(rotate * (Math.PI / 180));
-			//	matrix.translate(finalWidth / 2, finalHeight / 2);
-			//}
-			
-			data = new BitmapData(finalWidth, finalHeight, true, 0x00FFFFFF);
-			data.draw(asset, matrix);
-			
-			//if (bitmapLibrary[name] == null && asset.width > finalWidth && asset.height > finalHeight) {
-			//	bitmapLibrary[name] = data;
-			//}
-			
-			return new Bitmap(data, "auto", true);**/
+			asset.name = name;
 			return toBitmap(asset, setWidth, setHeight);
 		}
 		

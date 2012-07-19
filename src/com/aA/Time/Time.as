@@ -18,7 +18,7 @@ package com.aA.Time
 		public static function timeSince(time:Number, excess:Number = 1):String {
 			var currentTime:Date = new Date();
 			var importDate:Date = new Date();
-			importDate.time = time*excess;
+			importDate.time = time * excess;
 			
 			var difference:Number = currentTime.time-importDate.time;
 			
@@ -44,9 +44,9 @@ package com.aA.Time
 			if (difference < 60000) {
 				return "Just Now";
 			} else if (difference < Time.days(1)) {
-				return Time.xDaysxHoursxMinutes(difference / 1000, "", true, true, true);
+				return Time.xDaysxHoursxMinutes(difference / 1000, "ago", true, true, true);
 			} else if (difference > Time.days(1) && difference < (Time.days(7))) {
-				return Time.xDaysxHoursxMinutes(difference / 1000, "", true, true, false);
+				return Time.xDaysxHoursxMinutes(difference / 1000, "ago", true, true, false);
 			} else {
 				return Time.getSimpleDate(time);
 			}

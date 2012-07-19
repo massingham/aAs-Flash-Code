@@ -135,6 +135,16 @@ package com.aA.Maths
 			return sign + formattedNumber;
 		}
 		
+		public static function shortFormat(value:Number):String {
+			if (value < 99000) {
+				return Maths.formatNumber(value);
+			} else {
+				value /= 1000;
+				Math.floor(value);
+				return value + "k";
+			}
+		}
+		
 	}
 	
 }

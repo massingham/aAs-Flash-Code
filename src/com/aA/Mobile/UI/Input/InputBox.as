@@ -28,7 +28,7 @@ package com.aA.Mobile.UI.Input
 		{
 			super();
 			
-			this.addEventListener(Event.ADDED_TO_STAGE, initEventListeners);
+			// this.addEventListener(Event.ADDED_TO_STAGE, initEventListeners);
 			init(boxWidth, boxHeight, style);
 		}
 		
@@ -44,7 +44,7 @@ package com.aA.Mobile.UI.Input
 			if (style == null) {
 				inputStyle.setColourScheme({
 					inputBGColour:StyleManager.getInstance().getProperty("colour", "section_header"),
-					textColour:StyleManager.getInstance().getProperty("colour", "font_subheading"),
+					textColour:0x363636,
 					buttonTextColour:StyleManager.getInstance().getProperty("colour", "font_subheading"),
 					fillColour:StyleManager.getInstance().getProperty("colour", "section_header"),
 					highlightColour:0x7F7F7F

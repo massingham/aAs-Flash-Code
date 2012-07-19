@@ -1,6 +1,7 @@
 package com.aA.Mobile.UI.Behaviour 
 {
 	import com.aA.Style.StyleManager;
+	import com.greensock.BlitMask;
 	import com.gskinner.motion.GTween;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -23,6 +24,8 @@ package com.aA.Mobile.UI.Behaviour
 		public static const EVENT_RELEASE:String = "up";
 		public static const EVENT_RESET:String = "reset";
 		
+		public static const MIN_VELOCITY:Number = 0.8;
+		
 		private var newPos:Point
 		private var oldPos:Point;
 		private var speed:Point;
@@ -31,7 +34,7 @@ package com.aA.Mobile.UI.Behaviour
 		public var item:DisplayObject;
 		private var visibleArea:Point;
 		private var defaultPosition:Point;
-		private var mask:Sprite;
+		private var bm:BlitMask;
 		
 		private var type:String;
 		
@@ -40,10 +43,13 @@ package com.aA.Mobile.UI.Behaviour
 		// all for show milladio
 		private var scrollbarSprite:Bitmap;
 		
+		private var notLargeEnough:Boolean;
+		
 		public function ScrollableItem(item:DisplayObject, type:String, visibleArea:Point):void {
 			this.item = item;
 			this.type = type;
 			this.visibleArea = visibleArea;
+			notLargeEnough = false;
 			this.defaultPosition = new Point(item.x, item.y);
 			
 			if (item.parent != null) {
@@ -59,6 +65,8 @@ package com.aA.Mobile.UI.Behaviour
 			mouseStart = new Point(0, 0);
 			
 			this.item.addEventListener("reset", resetScroll);
+			this.item.addEventListener("refresh", refreshScroll);
+			this.item.addEventListener("up", closeUp);
 			this.item.addEventListener(MouseEvent.MOUSE_DOWN, mouseEvent);
 		}
 		
@@ -68,7 +76,6 @@ package com.aA.Mobile.UI.Behaviour
 		
 		private function resetScroll(event:Event):void {
 			immediateStopMovement();
-			
 			this.item.x = defaultPosition.x;
 			this.item.y = defaultPosition.y;
 			
@@ -78,24 +85,23 @@ package com.aA.Mobile.UI.Behaviour
 			startPosition = new Point(0, 0);
 			mouseStart = new Point(0, 0);
 			
+			bm.update(null, true);
+			bm.bitmapMode = false;
 			drawScrollbar();
+			update(null);
+		}
+		private function refreshScroll(event:Event):void {
 			
-			trace("reset");
 		}
 		
 		private function addMask(event:Event):void {
 			item.removeEventListener(Event.ADDED_TO_STAGE, addMask);
 			
-			var m:Sprite = new Sprite();
-			m.graphics.beginFill(0);
-			m.graphics.drawRect(0, 0, visibleArea.x, visibleArea.y);
-			m.graphics.endFill();
-			item.parent.addChild(m);
-			item.mask = m;
-			m.x = defaultPosition.x;
-			m.y = defaultPosition.y;
+			bm = new BlitMask(item, defaultPosition.x, defaultPosition.y, visibleArea.x, visibleArea.y, false, false, 0xFF000000);
+			bm.bitmapMode = false;
+			bm.addEventListener(MouseEvent.MOUSE_DOWN, bmDown);
 			
-			scrollbarSprite = new Bitmap(new BitmapData(10, 10, false, 0x000000));
+			scrollbarSprite = new Bitmap(new BitmapData(10, 10, false, StyleManager.getInstance().getProperty("colour","blue_1")));
 			scrollbarSprite.y = defaultPosition.y;
 			scrollbarSprite.x = defaultPosition.x + visibleArea.x - 15;
 			item.parent.addChild(scrollbarSprite);
@@ -120,8 +126,26 @@ package com.aA.Mobile.UI.Behaviour
 			scrollbarSprite.y = defaultPosition.y - pos;
 		}
 		
+		private function bmDown(event:MouseEvent):void {
+			if (bm.bitmapMode) {
+				//bm.bitmapMode = false;
+				mouseEvent(event);
+			}
+		}
+		
 		private function mouseEvent(event:MouseEvent):void { 
 			drawScrollbar();
+			
+			notLargeEnough = false;
+			if (type == TYPE_HORIZ) {
+				if (item.width < visibleArea.x) {
+					notLargeEnough = true;
+				}
+			} else {
+				if (item.height < visibleArea.y) {
+					notLargeEnough = true;
+				}
+			}
 			
 			switch(event.type) {
 				case MouseEvent.MOUSE_DOWN:
@@ -130,10 +154,12 @@ package com.aA.Mobile.UI.Behaviour
 					item.stage.addEventListener(MouseEvent.MOUSE_MOVE, mouseEvent);
 					item.stage.addEventListener(MouseEvent.MOUSE_UP, mouseEvent);
 					
-					if (type == TYPE_HORIZ) {
-						if (item.width < visibleArea.x) return;
+					if (notLargeEnough) {
+						//bm.bitmapMode = false;
+						return;
 					} else {
-						if (item.height < visibleArea.y) return;
+						bm.update(null, true);
+						//bm.bitmapMode = true;
 					}
 					
 					if (item.hasEventListener(Event.ENTER_FRAME)) {
@@ -147,10 +173,11 @@ package com.aA.Mobile.UI.Behaviour
 			case MouseEvent.MOUSE_MOVE:
 					this.dispatchEvent(new Event(EVENT_CLEAR));
 					
-					if (type == TYPE_HORIZ) {
-						if (item.width < visibleArea.x) return;
+					if (notLargeEnough) {
+						if (bm.bitmapMode) bm.bitmapMode = false;
+						return;
 					} else {
-						if (item.height < visibleArea.y) return;
+						if (!bm.bitmapMode) bm.bitmapMode = true;
 					}
 					
 					newPos = new Point(item.stage.mouseX, item.stage.mouseY);
@@ -162,10 +189,8 @@ package com.aA.Mobile.UI.Behaviour
 			case MouseEvent.MOUSE_UP:
 					this.dispatchEvent(new Event(EVENT_RELEASE));
 					
-					if (type == TYPE_HORIZ) {
-						if (item.width < visibleArea.x) return;
-					} else {
-						if (item.height < visibleArea.y) return;
+					if (notLargeEnough) {
+						return;
 					}
 					
 					applyVelocity();
@@ -174,6 +199,19 @@ package com.aA.Mobile.UI.Behaviour
 					item.stage.removeEventListener(MouseEvent.MOUSE_UP, mouseEvent);
 				break;
 			}
+		}
+		
+		private function closeUp(event:Event):void {
+			this.dispatchEvent(new Event(EVENT_RELEASE));
+					
+			if (notLargeEnough) {
+				return;
+			}
+					
+			applyVelocity();
+			
+			item.stage.removeEventListener(MouseEvent.MOUSE_MOVE, mouseEvent);
+			item.stage.removeEventListener(MouseEvent.MOUSE_UP, mouseEvent);
 		}
 		
 		private function immediateStopMovement():void {
@@ -202,14 +240,18 @@ package com.aA.Mobile.UI.Behaviour
 			drawScrollbar();
 			
 			if (type == TYPE_HORIZ) {
-				if (Math.abs(speed.x) < 0.15) {
+				if (Math.abs(speed.x) < MIN_VELOCITY) {
 					scrollbarTween = new GTween(scrollbarSprite, 0.5, { alpha:0 } );
 					item.removeEventListener(Event.ENTER_FRAME, velocityUpdate);
+
+					bm.bitmapMode = false;
 				}
 			} else {
-				if (Math.abs(speed.y) < 0.15) {
+				if (Math.abs(speed.y) < MIN_VELOCITY) {
 					scrollbarTween = new GTween(scrollbarSprite, 0.5, { alpha:0 } );
 					item.removeEventListener(Event.ENTER_FRAME, velocityUpdate);
+					
+					bm.bitmapMode = false;
 				}
 			}
 			
@@ -230,6 +272,8 @@ package com.aA.Mobile.UI.Behaviour
 					item.y = defaultPosition.y + (visibleArea.y - item.height);
 				}
 			}
+			
+			bm.update();
 		}
 		
 		private function update(event:Event):void {

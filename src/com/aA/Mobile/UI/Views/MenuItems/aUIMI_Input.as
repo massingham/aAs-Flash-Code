@@ -32,24 +32,20 @@ package com.aA.Mobile.UI.Views.MenuItems
 				"inputBGColour":0xEAEAEA
 			});
 			
-			inputTF = new aUIInput_NST(itemWidth / 2, itemHeight * .7, data.numLines, itemDescription, StyleManager.getInstance().getProperty("font", "small"));
+			inputTF = new aUIInput_NST(itemWidth * .9, itemHeight * .7, data.numLines, itemDescription, StyleManager.getInstance().getProperty("font", "medium"));
 			inputTF.style = style;
 			inputTF.addEventListener(Event.CHANGE, changed);
 			contentSprite.addChild(inputTF);
 			
 			inputTF.border = false;
 			
-			inputTF.x = itemWidth - (inputTF.width + padding * 2);
-			inputTF.y = 0;
-			
 			addInputLabel(itemName);
 			
-			contentSprite.y = itemHeight / 2 - (itemHeight * .7) / 2;
-			contentSprite.x = padding;
+			contentSprite.x = itemWidth * .05;
+			inputTF.x = 0;
+			inputTF.y = inputLabelTF.y + inputLabelTF.height;
 			
-			inputLabelTF.y = (inputTF.y + inputTF.height / 2) - inputLabelTF.height / 2;
-			
-			itemHeight = inputTF.height + itemHeight * .15;
+			itemHeight = inputTF.height + inputLabelTF.height + itemHeight * .15;
 			
 			drawHitArea();
 		}	

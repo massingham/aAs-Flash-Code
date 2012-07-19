@@ -1,5 +1,6 @@
 package com.aA.Mobile.UI.Views 
 {
+	import com.aA.Style.StyleManager;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
@@ -30,7 +31,9 @@ package com.aA.Mobile.UI.Views
 		
 		public function draw():void {
 			if (noBackground) return;
-			background = new Bitmap(new BitmapData(stage.fullScreenWidth, stage.fullScreenHeight, false, backgroundColour));
+			background = new Bitmap(new BitmapData(1, 1, false, backgroundColour));
+			background.width = StyleManager.getInstance().getProperty("stage","stageWidth");
+			background.height = StyleManager.getInstance().getProperty("stage", "stageHeight");
 			addChildAt(background, 0);
 		}
 	}

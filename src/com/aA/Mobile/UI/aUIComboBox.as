@@ -82,7 +82,7 @@ package com.aA.Mobile.UI
 		public function setMaxHeight(mH:Number):void {
 			if (maxHeight != -1) {
 				maxHeight = mH;
-				itemSprite.dispatchEvent(new Event("change"));
+				itemSprite.dispatchEvent(new Event("reset"));
 			} else {
 				if (itemSprite.height > mH) {
 					this.maxHeight = mH;
@@ -141,6 +141,8 @@ package com.aA.Mobile.UI
 			} else {
 				itemSprite.visible = false;
 				highlightBox.visible = false;
+				
+				itemSprite.dispatchEvent(new Event("up"));
 			}
 		}
 		
@@ -232,6 +234,21 @@ package com.aA.Mobile.UI
 					items[i].removeEventListener("click", selectItem);
 				}
 			}
+		}
+		
+		public function open():void {
+			if (!_open) {
+				openclose(null);
+			}
+		}
+		
+		public function close():void {
+			_open = false;
+			itemSprite.visible = false;
+			highlightBox.visible = false;
+			
+			itemSprite.dispatchEvent(new Event("reset"));
+			itemSprite.dispatchEvent(new Event("up"));
 		}
 		
 		private function selectItem(event:Event):void {
