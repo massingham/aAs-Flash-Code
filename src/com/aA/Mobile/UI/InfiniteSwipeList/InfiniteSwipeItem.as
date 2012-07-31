@@ -12,6 +12,7 @@ package com.aA.Mobile.UI.InfiniteSwipeList
 		protected var itemHeight:Number;
 		
 		protected var bgSprite:Sprite;
+		public var tutorialShown:Boolean;
 		
 		public var _currentSelection:Boolean = false;
 		

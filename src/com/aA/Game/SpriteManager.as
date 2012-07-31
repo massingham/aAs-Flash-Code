@@ -64,8 +64,8 @@ package com.aA.Game
 		
 		public static function toBitmap(asset:DisplayObject, setWidth:Number = -1, setHeight:Number = -1):Bitmap {
 			var data:BitmapData;
-			var finalWidth:int = setWidth;
-			var finalHeight:int = setHeight;
+			var finalWidth:int = Math.floor(setWidth);
+			var finalHeight:int = Math.floor(setHeight);
 			
 			if (setWidth == -1 && setHeight != -1) {
 				finalWidth = (finalHeight / asset.height) * asset.width;

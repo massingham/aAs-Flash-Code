@@ -176,7 +176,7 @@ package com.aA.Mobile.UI
 		}
 		
 		public function set text(val:String):void {
-			label.text = val;
+			label.htmlText = val;
 			
 			getFullWidth();
 			

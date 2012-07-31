@@ -90,8 +90,13 @@ package com.aA.Mobile.UI.Behaviour
 			drawScrollbar();
 			update(null);
 		}
-		private function refreshScroll(event:Event):void {
+		private function refreshScroll(event:Event):void {			
+			immediateStopMovement();
 			
+			bm.update(null, true);
+			bm.bitmapMode = false;
+			drawScrollbar();
+			//update(null);
 		}
 		
 		private function addMask(event:Event):void {
@@ -218,6 +223,12 @@ package com.aA.Mobile.UI.Behaviour
 			item.removeEventListener(Event.ENTER_FRAME, update);
 			item.stage.removeEventListener(MouseEvent.MOUSE_MOVE, mouseEvent);
 			item.stage.removeEventListener(MouseEvent.MOUSE_UP, mouseEvent);
+			
+			newPos = new Point(0, 0);
+			oldPos = new Point(0, 0);
+			speed = new Point(0, 0);
+			startPosition = new Point(0, 0);
+			mouseStart = new Point(0, 0);
 		}
 		
 		private function applyVelocity():void {
@@ -269,6 +280,7 @@ package com.aA.Mobile.UI.Behaviour
 					item.y = defaultPosition.y;
 				} else if (item.y + item.height < visibleArea.y + defaultPosition.y) {
 					dispatchEvent(new Event("bottom"));
+					refreshScroll(null);
 					item.y = defaultPosition.y + (visibleArea.y - item.height);
 				}
 			}

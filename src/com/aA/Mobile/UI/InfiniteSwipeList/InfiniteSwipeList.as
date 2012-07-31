@@ -7,6 +7,7 @@ package com.aA.Mobile.UI.InfiniteSwipeList
 	import com.gskinner.motion.easing.Elastic;
 	import com.gskinner.motion.easing.Sine;
 	import com.gskinner.motion.GTween;
+	import com.Kondoot.API.Data.DataManager;
 	import com.Kondoot.API.Data.VideoObject;
 	import com.Kondoot.KMA.Views.Popup.BannerPopup.BannerPopupManager;
 	import com.Kondoot.MobileTools.Controller.MobileController;
@@ -101,9 +102,20 @@ package com.aA.Mobile.UI.InfiniteSwipeList
 			for (var i:int = 0; i < inputItems.length; i++) {
 				itemSprite.addChild(inputItems[i]);
 				items[i] = inputItems[i];
+				
+				if (DataManager.getInstance().firstLoad()) {
+					items[i].addEventListener("tutorial_shown", clearTutorialStatus);
+				}
 			}
 			
 			draw();
+		}
+		
+		private function clearTutorialStatus(event:Event):void {
+			for (var i:int = 0; i < items.length; i++) {
+				items[i].removeEventListener("tutorial_shown", clearTutorialStatus);
+				items[i].tutorialShown = false;
+			}
 		}
 		
 		private function init(event:Event):void {

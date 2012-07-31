@@ -44,7 +44,7 @@ package com.aA.Text
 		 * @return
 		 */
 
-		public static function getTextField(text:String, size:int, color:uint = 0x000000, alignment:String = "LEFT", font:String = "MY_FONT", embedded:Boolean = true):TextField {			
+		public static function getTextField(text:String, size:int, color:uint = 0x000000, alignment:String = "LEFT", font:String = "_sans", embedded:Boolean = false):TextField {			
 			var tf:TextField = new TextField();
 			
 			//Font.registerFont(CalibriFont);

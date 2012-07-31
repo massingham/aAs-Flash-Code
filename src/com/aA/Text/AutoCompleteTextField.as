@@ -21,12 +21,7 @@ package com.aA.Text {
 			wordList = new Sprite();
 			addChild(wordList);
 			
-			this.dictionary = dictionary;
-			this.dictionary.sort();
-			
-			for (var i:int = 0; i < this.dictionary.length; i++) {
-				dictionary[i] = dictionary[i].toUpperCase();
-			}
+			setList(dictionary);
 			
 			currentList = new Array();
 			
@@ -57,6 +52,16 @@ package com.aA.Text {
 				submitB.addEventListener(MouseEvent.MOUSE_OUT, mEvents);
 				
 				submitB.buttonMode = true;
+			}
+		}
+		
+		public function setList(dictionary:Array):void {
+			clearList();
+			this.dictionary = dictionary;
+			this.dictionary.sort();
+			
+			for (var i:int = 0; i < this.dictionary.length; i++) {
+				dictionary[i] = dictionary[i].toUpperCase();
 			}
 		}
 		
@@ -125,9 +130,9 @@ package com.aA.Text {
 				wordList.addChild(tfSpriteThing);
 				
 				if(i%2==0){
-					tfSpriteThing.graphics.beginFill(ColourScheme.getInstance().highlight);
+					tfSpriteThing.graphics.beginFill(0xDBDBDB);
 				} else {
-					tfSpriteThing.graphics.beginFill(ColourScheme.getInstance().highlight_Light);
+					tfSpriteThing.graphics.beginFill(0xEEEEEE);
 				}
 				
 				tfSpriteThing.graphics.drawRect(0, 0, textField.width, tf2.height);
