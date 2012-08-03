@@ -190,7 +190,7 @@ package com.aA.Mobile.UI.Views
 			var sectionSprite:Sprite = new Sprite();
 			
 			var tf:TextField = Text.getTextField("<b>" + sectionName.toUpperCase() + "</b>", StyleManager.getInstance().getProperty("font", "small"), 0x000000, "LEFT", "_sans", false);
-			sectionSprite.addChild(tf);
+			//sectionSprite.addChild(tf);
 			
 			sectionSprite.graphics.lineStyle(2, 0, 0.4);
 			sectionSprite.graphics.moveTo(0 - padding / 2, tf.height);

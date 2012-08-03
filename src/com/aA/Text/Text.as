@@ -110,6 +110,16 @@ package com.aA.Text
 			
 			return tf;
 		}
+		
+		public static function capWidth(tf:TextField, maxWidth:Number):TextField {
+			if (tf.width > maxWidth) {
+				var numChars:int = maxWidth / (tf.textWidth / tf.text.length) - 4;
+				tf.text = tf.text.substr(0, numChars) + "...";
+				return tf;
+			} else {
+				return tf;
+			}
+		}
 	}
 
 }

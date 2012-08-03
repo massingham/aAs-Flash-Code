@@ -5,6 +5,7 @@ package com.aA.Mobile.UI
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.text.TextField;
@@ -127,6 +128,8 @@ package com.aA.Mobile.UI
 		}
 		
 		private function openclose(event:Event):void {
+			if(event) event.stopImmediatePropagation();
+			
 			_open = !_open;
 			
 			if (_open) {
@@ -138,12 +141,20 @@ package com.aA.Mobile.UI
 				}
 				this.parent.setChildIndex(this, this.parent.numChildren - 1);
 				dispatchEvent(new Event("open"));
+				
+				this.stage.addEventListener(MouseEvent.CLICK, toggleClose);
 			} else {
 				itemSprite.visible = false;
 				highlightBox.visible = false;
 				
 				itemSprite.dispatchEvent(new Event("up"));
+				
+				this.stage.removeEventListener(MouseEvent.CLICK, toggleClose);
 			}
+		}
+		
+		private function toggleClose(event:Event):void {
+			openclose(event);
 		}
 		
 		public function hasItem(id:String):Boolean {

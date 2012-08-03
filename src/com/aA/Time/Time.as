@@ -44,9 +44,11 @@ package com.aA.Time
 			if (difference < 60000) {
 				return "Just Now";
 			} else if (difference < Time.days(1)) {
+				// less than a day ago
 				return Time.xDaysxHoursxMinutes(difference / 1000, "ago", true, true, true);
 			} else if (difference > Time.days(1) && difference < (Time.days(7))) {
-				return Time.xDaysxHoursxMinutes(difference / 1000, "ago", true, true, false);
+				// greater than a day, but less than a week ago
+				return Time.xDaysxHoursxMinutes(difference / 1000, "ago", true, false, false);
 			} else {
 				return Time.getSimpleDate(time);
 			}

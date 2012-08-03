@@ -1,5 +1,6 @@
 package com.aA.Mobile.UI.InfiniteSwipeList 
 {
+	import com.aA.Style.StyleManager;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	/**
@@ -32,7 +33,7 @@ package com.aA.Mobile.UI.InfiniteSwipeList
 			bgSprite = new Sprite();
 			addChild(bgSprite);
 			
-			bgSprite.graphics.beginFill(0xEFF0F4);
+			bgSprite.graphics.beginFill(StyleManager.getInstance().getProperty("colour", "background_colour"));
 			bgSprite.graphics.drawRect(0, 0, itemWidth, 1);
 			bgSprite.graphics.endFill();
 			
@@ -45,6 +46,10 @@ package com.aA.Mobile.UI.InfiniteSwipeList
 			bgSprite.graphics.endFill();
 			
 			bgSprite.height = itemHeight;
+		}
+		
+		public function sort(array:Array):Array {
+			return array;
 		}
 		
 		public function clear():void {

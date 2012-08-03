@@ -43,10 +43,10 @@ package com.aA.Mobile.UI.Input
 			var inputStyle:aUIStyleGuide = new aUIStyleGuide();
 			if (style == null) {
 				inputStyle.setColourScheme({
-					inputBGColour:StyleManager.getInstance().getProperty("colour", "section_header"),
+					inputBGColour:0xFFFFFF,
 					textColour:0x363636,
 					buttonTextColour:StyleManager.getInstance().getProperty("colour", "font_subheading"),
-					fillColour:StyleManager.getInstance().getProperty("colour", "section_header"),
+					fillColour:0xFFFFFF,
 					highlightColour:0x7F7F7F
 				});
 			} else {
@@ -90,6 +90,7 @@ package com.aA.Mobile.UI.Input
 		}
 		
 		private function submitMessage():void {
+			if (inputTF.text == "") return;
 			dispatchEvent(new Event("submit"));
 		}
 		

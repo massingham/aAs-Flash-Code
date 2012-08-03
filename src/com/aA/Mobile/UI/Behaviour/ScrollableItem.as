@@ -35,6 +35,8 @@ package com.aA.Mobile.UI.Behaviour
 		private var visibleArea:Point;
 		private var defaultPosition:Point;
 		private var bm:BlitMask;
+		private var count:int = 0;
+		private var cleared:Boolean;
 		
 		private var type:String;
 		
@@ -154,6 +156,9 @@ package com.aA.Mobile.UI.Behaviour
 			
 			switch(event.type) {
 				case MouseEvent.MOUSE_DOWN:
+					count = 0;
+					cleared = false;
+					
 					scrollbarTween = new GTween(scrollbarSprite, 0.2, { alpha:1 } );
 					
 					item.stage.addEventListener(MouseEvent.MOUSE_MOVE, mouseEvent);
@@ -176,7 +181,12 @@ package com.aA.Mobile.UI.Behaviour
 					scroll();
 				break;
 			case MouseEvent.MOUSE_MOVE:
-					this.dispatchEvent(new Event(EVENT_CLEAR));
+					if (count > 5 && !cleared) {
+						this.dispatchEvent(new Event(EVENT_CLEAR));
+						cleared = true;
+					} else {
+						count += (Math.abs(newPos.length - oldPos.length));
+					}
 					
 					if (notLargeEnough) {
 						if (bm.bitmapMode) bm.bitmapMode = false;
@@ -221,6 +231,7 @@ package com.aA.Mobile.UI.Behaviour
 		
 		private function immediateStopMovement():void {
 			item.removeEventListener(Event.ENTER_FRAME, update);
+			
 			item.stage.removeEventListener(MouseEvent.MOUSE_MOVE, mouseEvent);
 			item.stage.removeEventListener(MouseEvent.MOUSE_UP, mouseEvent);
 			
@@ -269,13 +280,13 @@ package com.aA.Mobile.UI.Behaviour
 		}
 		
 		private function boundsCheck():void {
-			if (type == TYPE_HORIZ) {
+			/**if (type == TYPE_HORIZ) {
 				if (item.x + item.width < visibleArea.x) {
 					item.x = visibleArea.x - item.width;
 				} else if (item.x > defaultPosition.x) {
 					item.x = defaultPosition.x;
 				}
-			} else {
+			} else {**/
 				if (item.y > defaultPosition.y) {
 					item.y = defaultPosition.y;
 				} else if (item.y + item.height < visibleArea.y + defaultPosition.y) {
@@ -283,17 +294,17 @@ package com.aA.Mobile.UI.Behaviour
 					refreshScroll(null);
 					item.y = defaultPosition.y + (visibleArea.y - item.height);
 				}
-			}
+			//}
 			
 			bm.update();
 		}
 		
 		private function update(event:Event):void {
-			if (type == TYPE_HORIZ) {
-				item.x = startPosition.x + (item.stage.mouseX - mouseStart.x);
-			} else {
-				item.y = startPosition.y + (item.stage.mouseY - mouseStart.y);
-			}
+			//if (type == TYPE_HORIZ) {
+			//	item.x = startPosition.x + (item.stage.mouseX - mouseStart.x);
+			//} else {
+			item.y = startPosition.y + (item.stage.mouseY - mouseStart.y);
+			//}
 			
 			boundsCheck();
 		}

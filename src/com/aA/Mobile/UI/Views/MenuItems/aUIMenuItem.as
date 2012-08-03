@@ -120,7 +120,7 @@ package com.aA.Mobile.UI.Views.MenuItems
 		}
 		
 		protected function drawItemDescription():void {
-			itemDescriptionTF = Text.getTextField(itemDescription, StyleManager.getInstance().getProperty("font","small"), 0x494949, "LEFT", "_sans", false);
+			itemDescriptionTF = Text.getTextField(itemDescription, StyleManager.getInstance().getProperty("font", "small"), StyleManager.getInstance().getProperty("colour", "font_content"), "LEFT", "_sans", false);
 			contentSprite.addChild(itemDescriptionTF);
 			itemDescriptionTF.y = itemNameTF.height;
 		}

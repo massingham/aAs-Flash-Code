@@ -32,8 +32,9 @@ package com.aA.Mobile.UI.InfiniteSwipeList
 		private static const NUM_ITEMS:int = 4;	// Number of items to store at all times, it will recycle these.
 		private static const SWIPE_SPEED:Number = 0.2;
 		private var items:Vector.<InfiniteSwipeItem>;
-		private var currentVisibleItem:InfiniteSwipeItem
+		private var currentVisibleItem:InfiniteSwipeItem;
 		
+		private var _itemsPerPage:int = 1;
 		private var visibleItem:int = 0;
 		private var currentItem:int = 0;
 		private var minItem:int;
@@ -72,7 +73,15 @@ package com.aA.Mobile.UI.InfiniteSwipeList
 		
 		private var _postCall:Function;
 		
+		// Adds clickable areas on the left and right of the screen - Swipes don't work on computers
 		private var desktopMode:Boolean;
+		
+		private var _noDataText:String = "No Videos";
+		private var novidsTF:TextField
+		private var _waitingText:String = "We're loading more videos...";
+		private var _noMoreText:String = "No more videos";
+		private var _continueText:String = "More videos loaded";
+		private var _defaultLimit:int = 10;
 		
 		public function InfiniteSwipeList(listWidth:Number, listHeight:Number) 
 		{
@@ -82,19 +91,37 @@ package com.aA.Mobile.UI.InfiniteSwipeList
 			this.addEventListener(Event.ADDED_TO_STAGE, init);
 		}
 		
-		public function get numItems():Number {
+		public function set noDataText(value:String):void {
+			_noDataText = value;
+			
+			if (novidsTF) {
+				novidsTF.text = _noDataText;
+				novidsTF.x = itemWidth / 2 - novidsTF.width / 2;
+				novidsTF.y = noVideosNotification.height / 2 - novidsTF.height / 2;
+			}
+		}
+		
+		public function set waitingText(value:String):void {
+			_waitingText = value;
+		}
+		
+		public function set noMoreText(value:String):void {
+			_noMoreText = value;
+		}
+		
+		public function set continueText(value:String):void {
+			_continueText = value;
+		}
+		
+		public function set itemsPerPage(val:int):void {
+			_itemsPerPage = val;
+		}
+		
+		public function get numItems():int {
 			return NUM_ITEMS;
 		}
 		
-		public function setVidItems(inputItems:Array):void {
-			/**for (var i:int = 0; i < NUM_ITEMS; i++) {
-				var item:InfiniteSwipeItem = new InfiniteSwipeItem(itemWidth, itemHeight);
-				itemSprite.addChild(item);
-				items[i] = item;
-				
-				item.x = itemWidth * i;
-			}**/
-			
+		public function setItems(inputItems:Array):void {
 			if (inputItems.length != NUM_ITEMS) return;
 			
 			items = new Vector.<InfiniteSwipeItem>(NUM_ITEMS);
@@ -120,7 +147,7 @@ package com.aA.Mobile.UI.InfiniteSwipeList
 		
 		private function init(event:Event):void {
 			currentOffset = 0;
-			currentLimit = 10;
+			currentLimit = _defaultLimit;
 			currentListData = new Array();
 			
 			this.removeEventListener(Event.ADDED_TO_STAGE, init);
@@ -166,7 +193,7 @@ package com.aA.Mobile.UI.InfiniteSwipeList
 			noVideosNotification.graphics.drawRect(0, 0, itemWidth, itemHeight * .1);
 			noVideosNotification.graphics.endFill();
 			
-			var novidsTF:TextField = Text.getTextField("Sorry, no videos!", 10, 0x646464, "LEFT", "_sans", false);
+			novidsTF = Text.getTextField(_noDataText, 10, 0x646464, "LEFT", "_sans", false);
 			noVideosNotification.addChild(novidsTF);
 			novidsTF.x = itemWidth / 2 - novidsTF.width / 2;
 			novidsTF.y = noVideosNotification.height / 2 - novidsTF.height / 2;
@@ -215,12 +242,18 @@ package com.aA.Mobile.UI.InfiniteSwipeList
 		}
 		
 		private function swipeLeft():void {			
-			if(currentItem + 1 == currentListData.length){
+			trace(currentItem + " : " + _itemsPerPage + " : " + currentListData.length);
+			if(((currentItem+1) * _itemsPerPage) >= currentListData.length){
+			//if(currentItem + _itemsPerPage == currentListData.length){
 				// add 'waiting', 'display : ' more!' when more is loaded
 				if (noMore) {
-					displayBannerMessage("That's it!", "No more videos");
+					displayBannerMessage("That's it!", _noMoreText);
+					
+					//itemSprite.x = 0 - (currentItem * itemWidth);
+					//itemSprite.x -= itemWidth * .05;
+					//tween = new GTween(itemSprite, SWIPE_SPEED, { x: 0 - (currentItem * itemWidth) } , { ease:Sine.easeIn } );
 				} else {
-					displayBannerMessage("Hold on!", "We're loading more videos...");
+					displayBannerMessage("Hold on!", _waitingText);
 					waiting = true;
 				}
 			} else {
@@ -237,7 +270,7 @@ package com.aA.Mobile.UI.InfiniteSwipeList
 		
 		private function swipeRight():void {			
 			if (currentItem == 0) {
-				itemSprite.x = 10;
+				itemSprite.x = itemWidth * .05;
 				visibleItem = 0;
 				tween = new GTween(itemSprite, SWIPE_SPEED, { x: 0 - (currentItem * itemWidth) } , { ease:Sine.easeIn } );
 			} else {
@@ -250,11 +283,12 @@ package com.aA.Mobile.UI.InfiniteSwipeList
 		}
 		
 		private function onSwipeComplete(tween:GTween):void {
-			trace("visible item is : " +visibleItem);
+			//trace("visible item is : " +visibleItem);
 			displayCurrentItem();
 		}
 		
-		// Moves the internal workings around to ensure that there is always an item on the left, and right hand side of the current viewable item
+		// Moves the internal workings around to ensure that there is always an item on the left, 
+		// sand right hand side of the current viewable item
 		private function presort():void {
 			if (currentItem + 1 > maxItem) {
 				// move one from the front, to the end
@@ -266,6 +300,7 @@ package com.aA.Mobile.UI.InfiniteSwipeList
 				maxItem++;
 				minItem++;
 				visibleItem--;
+				
 				draw();
 			} else if (currentItem - 1 < minItem && currentItem - 1 >= 0) {
 				// move from from the end to the front
@@ -276,6 +311,7 @@ package com.aA.Mobile.UI.InfiniteSwipeList
 				maxItem--;
 				minItem--;
 				visibleItem++;
+				
 				draw();
 			}
 		}
@@ -335,6 +371,7 @@ package com.aA.Mobile.UI.InfiniteSwipeList
 		
 		public function setLimit(limitValue:Number):void {
 			currentLimit = limitValue;
+			_defaultLimit = currentLimit;
 		}
 		
 		public function increaseOffset():void {
@@ -382,7 +419,8 @@ package com.aA.Mobile.UI.InfiniteSwipeList
 		}
 		
 		private function checkData():void {
-			if (currentItem + NUM_ITEMS >= currentOffset) {
+			//if (currentItem + NUM_ITEMS >= currentOffset) {
+			if ((currentItem * _itemsPerPage) + (NUM_ITEMS *_itemsPerPage) >= currentOffset) {
 				loadNext(null);
 			}
 		}
@@ -402,10 +440,13 @@ package com.aA.Mobile.UI.InfiniteSwipeList
 		}
 		
 		private function parseData(data:Array):void {
-			for (var i:int = 0; i < data.length; i++) {
-				var vid:VideoObject = VideoObject.createFromObject(data[i].video);
-				currentListData.push(vid);
+			var temp:Array = items[0].sort(data);
+			
+			for (var i:int = 0; i < temp.length; i++) {
+				//var vid:VideoObject = VideoObject.createFromObject(data[i].video);
+				currentListData.push(temp[i]);
 			}
+			
 			if (currentItem == 0) {
 				displayCurrentItem();
 			}
@@ -417,7 +458,9 @@ package com.aA.Mobile.UI.InfiniteSwipeList
 		}
 		
 		private function displayCurrentItem():void {
-			items[visibleItem].sendContent(currentListData[currentItem]);
+			//items[visibleItem].sendContent(currentListData[currentItem]);
+			var content:Array = currentListData.slice(currentItem * _itemsPerPage, (currentItem * _itemsPerPage) + (_itemsPerPage));
+			items[visibleItem].sendContent(content)
 		}
 		
 		public function onCallReturn(data:Array):void {
@@ -434,13 +477,13 @@ package com.aA.Mobile.UI.InfiniteSwipeList
 				parseData(data);
 				increaseOffset();
 				
-				if(waiting)	displayBannerMessage("All Done!", "More videos this way!");
+				if(waiting)	displayBannerMessage("All Done!", _continueText);
 			} else {
 				trace("data length is 0");
 				if (currentListData.length == 0) {
 					noItemDisplay();
 				} else {
-					displayBannerMessage("That's it!", "No more videos");
+					// displayBannerMessage("That's it!", _noMoreText);
 				}
 				noMore = true;
 			}
