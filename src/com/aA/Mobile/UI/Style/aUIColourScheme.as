@@ -14,7 +14,7 @@ package com.aA.Mobile.UI.Style
 		public static const COLOUR_INPUTBGCOLOUR:String 	= "inputBGColour";
 		
 		public var lineColour:uint = 0x000000;
-		public var fillColour:uint = 0xFFFFFF;
+		public var fillColour:uint = 0xBFBFBF;
 		public var highlightColour:uint = 0xCCCCCC;
 		public var textColour:uint = 0x333333;
 		public var buttonTextColour:uint = 0xFFFFFF;

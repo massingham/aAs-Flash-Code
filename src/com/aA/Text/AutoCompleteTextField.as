@@ -16,10 +16,14 @@ package com.aA.Text {
 		private var textField:TextField;
 		private var currentList:Array;
 		private var wordList:Sprite;
+		private var _maxHeight:Number;
+		private var _maskSprite:Sprite;
 		
-		public function AutoCompleteTextField(inputTF:TextField, dictionary:Array, submitButton:Boolean = false) {
+		public function AutoCompleteTextField(inputTF:TextField, dictionary:Array, submitButton:Boolean = false, maxHeight:Number = 0) {
 			wordList = new Sprite();
 			addChild(wordList);
+			
+			this._maxHeight = maxHeight;
 			
 			setList(dictionary);
 			
@@ -154,6 +158,20 @@ package com.aA.Text {
 			
 			wordList.graphics.lineStyle(0, 0x556C84);
 			wordList.graphics.drawRect(textField.x, (textField.y + textField.height), wordList.width, wordList.height);
+			
+			if (_maxHeight != 0) {
+				if (!_maskSprite) {
+					_maskSprite = new Sprite();
+					addChild(_maskSprite);
+					
+					wordList.mask = _maskSprite;
+				}
+				
+				_maskSprite.graphics.clear();
+				_maskSprite.graphics.beginFill(0);
+				_maskSprite.graphics.drawRect(0, 0, wordList.width, _maxHeight);
+				_maskSprite.graphics.endFill();
+			}
 		}
 		
 		private function mEvents(event:MouseEvent):void {

@@ -25,8 +25,11 @@ package com.aA.UI
 		private var scrollSpeed:Number = 0;
 		private var ratio:Number;
 		private var startPos:Number;
+		private var savedPercentage:Number;
 		
 		private var clipY:Number;
+		
+		public var scrolling:Boolean;
 		
 		private var scrollerVisible:Boolean = false;
 		
@@ -42,11 +45,8 @@ package com.aA.UI
 			clipY = this.clip.y;
 			this.scrollHeight = scrollHeight;
 			currentPos = 0;
-			
+			scrolling = false;
 			startPos = this.clip.y;
-			
-			trace(clip.height);
-			trace(scrollHeight);
 			
 			if (clip.height > scrollHeight) {
 				createMask();
@@ -58,6 +58,14 @@ package com.aA.UI
 				scrollerVisible = true;
 			} else {
 				trace("CLIP ISNT TALL ENOUGH, LOWER THE HEIGHT");
+			}
+			
+			this.addEventListener(Event.REMOVED_FROM_STAGE, onRemoved);
+		}
+		
+		private function onRemoved(event:Event):void {
+			if (maskSprite) {
+				clip.mask = null;
 			}
 		}
 		
@@ -71,9 +79,9 @@ package com.aA.UI
 		
 		public function scrollWheel(event:MouseEvent):void {
 			if (event.delta < 0) {
-				scrollSpeed = 2;
+				scrollSpeed = 5;
 			} else {
-				scrollSpeed = -2;	
+				scrollSpeed = -5;	
 			}
 			
 			var maxHeight:Number = (backSprite.height - barSprite.height) + 10;
@@ -116,6 +124,13 @@ package com.aA.UI
 		 * @param	newHeight
 		 */
 		public function redrawScroller(newHeight:Number = 0):void {
+			if (barSprite) {
+				savedPercentage = barSprite.y;
+			} else {
+				savedPercentage = 0;
+			}
+
+			
 			if (newHeight.toString() == "NaN") {
 				newHeight = 0;
 			}
@@ -149,14 +164,24 @@ package com.aA.UI
 			}
 			
 			// trace("is " + clip.height +" > " + scrollHeight);
-			if (clip.height > scrollHeight) {
-				
+			if (clip.height > scrollHeight) {				
 				createMask();
 				createControls();					
 				
 				if (!scrollerVisible) {
 					this.x = clip.x;
 					this.y = clip.y;
+				}
+				
+				if (savedPercentage != 0) {
+					barSprite.y = savedPercentage;
+					
+					var maxHeight:Number = (backSprite.height - barSprite.height) + 10;
+					if (barSprite.y > maxHeight) {
+						barSprite.y = maxHeight;
+					}
+					
+					scrollClip(null);
 				}
 				
 				scrollerVisible = true;
@@ -287,6 +312,7 @@ package com.aA.UI
 			barSprite.startDrag(false, new Rectangle(0, 10, 0, backSprite.height - barSprite.height));
 			this.stage.addEventListener(MouseEvent.MOUSE_UP, buttonRelease);
 			
+			scrolling = true;
 			addEventListener(Event.ENTER_FRAME, scrollClip);
 		}
 		
@@ -345,6 +371,7 @@ package com.aA.UI
 		private function buttonRelease(event:MouseEvent):void {
 			this.stage.removeEventListener(MouseEvent.MOUSE_UP, buttonRelease);
 			scrollSpeed = 0;
+			scrolling = false;
 			removeEventListener(Event.ENTER_FRAME, scroll);
 			removeEventListener(Event.ENTER_FRAME, scrollClip);
 			barSprite.stopDrag();			

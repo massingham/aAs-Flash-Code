@@ -44,6 +44,8 @@ package com.aA.Mobile.UI
 			_fullHeight = fullHeight;
 			_align = align;
 			
+			this.name = labelText;
+			
 			_padding = _fullHeight * 0.2;
 			
 			init();

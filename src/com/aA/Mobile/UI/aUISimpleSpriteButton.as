@@ -51,7 +51,7 @@ package com.aA.Mobile.UI
 		 * @param	state
 		 * @param	stateIcon
 		 */
-		public function addState(state:String, stateIcon:DisplayObject, event:MouseEvent = null):void {
+		public function addState(state:String, stateIcon:DisplayObject, event:MouseEvent = null, useInputDimensions:Boolean = false):void {
 			if (event) {
 				hitSprite.addEventListener(event.type, mEvent);				
 				states[event.type] = stateIcon;
@@ -59,11 +59,25 @@ package com.aA.Mobile.UI
 				states[state] = stateIcon;
 			}
 			
-			stateIcon.width = theWidth;
-			stateIcon.height = theHeight;
+			if(!useInputDimensions){
+				stateIcon.width = theWidth;
+				stateIcon.height = theHeight;
+			} else {
+				theWidth = stateIcon.width;
+				theHeight = stateIcon.height;
+				
+				hitSprite.graphics.clear();
+				hitSprite.graphics.beginFill(0);
+				hitSprite.graphics.drawRect(0, 0, theHeight, theHeight);
+				hitSprite.graphics.endFill();
+			}
 			
 			stateIcon.visible = false;
 			displaySprite.addChild(stateIcon);
+			
+			if (currentState == "") {
+				setState(state);
+			}
 		}
 		
 		public function get state():String {

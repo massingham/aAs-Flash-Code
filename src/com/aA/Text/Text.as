@@ -5,6 +5,7 @@ package com.aA.Text
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFieldType;
 	import flash.text.TextFormatAlign;
+	import flash.text.TextFormatDisplay;
 	
 	import flash.text.Font;
 	import flash.text.AntiAliasType;
@@ -92,7 +93,7 @@ package com.aA.Text
 		 * @param	alignment					Alignment, DEFAULT : LEFT
 		 * @return
 		 */
-		public static function getInput(width:int, height:int, size:int, bgColour:uint = 0xFFFFFF, fontcolor:uint = 0x000000, alignment:String = "LEFT", font:String = "MY_FONT", embedded:Boolean = true):TextField {
+		public static function getInput(width:int, height:int, size:int, bgColour:uint = 0xFFFFFF, fontcolor:uint = 0x000000, alignment:String = "LEFT", font:String = "_sans", embedded:Boolean = false):TextField {
 			var tf:TextField = getTextField("", size, fontcolor, alignment, font, embedded);
 			
 			tf.type = TextFieldType.INPUT;
